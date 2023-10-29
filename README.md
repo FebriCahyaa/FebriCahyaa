@@ -1,4 +1,6 @@
-- 👋 I’m FebriCahya
+![image](https://github.com/FebriCahyaa/FebriCahyaa/assets/87246800/e271b1bb-fea5-4628-84ed-c46904f12909)
+
+
 - 🇮🇩 I'm from Indonesia
 - 🎓 I’m a college student 
 - 📚 I'm currently learning C++, Java
@@ -18,19 +20,6 @@
 <img src="https://readme-jokes.vercel.app/api?hideBorder&theme=cobalt&qColor=%23944bcc&aColor=%23bbdb51" alt="Jokes Card" />
 
 ---
-**FebriCahyaa/FebriCahyaa** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
-
----
-
 ### :zap: Recent Activity
 
 <!--START_SECTION:activity-->
