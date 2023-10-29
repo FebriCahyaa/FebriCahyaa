@@ -19,11 +19,6 @@
 
   <img align="left" alt="FebriCahyaa Github Stats" src="https://github-readme-stats-gp89yoxi9-febricahyaas-projects.vercel.app/api?username=FebriCahyaa&show_icons=true&hide_border=true" />
 
-</detail>
-
-<detail>
-  <summary>:v: Top Langs</summary>
-
   <img align="left" alt="FebriCahyaa Top Langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&theme=dark(https://github.com/FebriCahyaa)" />
 
 </detail>
