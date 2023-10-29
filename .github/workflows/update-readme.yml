@@ -1,19 +1,21 @@
-name: CI
-
-on: [push, pull_request]
-
+name: Update README
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
 jobs:
   build:
-    name: Generate build and check code formatting
-
+    name: Update this repo's README with recent activity
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node 16
-        uses: actions/setup-node@v3
+      - uses: FebriCahyaa/FebriCahyaa@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          node-version: 16
-      - run: npm ci
-      - run: npm run format:check
-      - run: npm run build
+          COMMIT_MSG: "Specify a custom commit message"
+          MAX_LINES: 10
+          COMMIT_NAME: GitHub Activity Readme
