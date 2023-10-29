@@ -14,14 +14,17 @@
 <code><img height="20" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/terminal/terminal.png"></code>
 ![](https://komarev.com/ghpvc/?username=FebriCahyaa)
 
-<detail>
-  <summary>:zap: Github Stats</summary>
+---
+**FebriCahyaa/FebriCahyaa** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
-  <img align="left" alt="FebriCahyaa Github Stats" src="https://github-readme-stats-gp89yoxi9-febricahyaas-projects.vercel.app/api?username=FebriCahyaa&show_icons=true&hide_border=true" />
+Here are some ideas to get you started:
 
-  <img align="left" alt="FebriCahyaa Top Langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&theme=dark(https://github.com/FebriCahyaa)" />
-
-</detail>
+- 🌱 I’m currently learning ...
+- 👯 I’m looking to collaborate on ...
+- 🤔 I’m looking for help with ...
+- 💬 Ask me about ...
+- 😄 Pronouns: ...
+- ⚡ Fun fact: ...
 
 ---
 
@@ -36,3 +39,12 @@
 <!--END_SECTION:activity-->
 
 ---
+
+<detail>
+  <summary>:zap: Github Stats</summary>
+
+  <img align="left" alt="FebriCahyaa Github Stats" src="https://github-readme-stats-gp89yoxi9-febricahyaas-projects.vercel.app/api?username=FebriCahyaa&show_icons=true&hide_border=true" />
+
+  <img align="left" alt="FebriCahyaa Top Langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&theme=dark(https://github.com/FebriCahyaa)" />
+
+</detail>
