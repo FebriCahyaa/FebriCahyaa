@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: FebriCahyaa/FebriCahyaa@master
+      - uses: FebriCahyaa/FebriCahyaa@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
