@@ -24,6 +24,6 @@
 <detail>
   <summary>:v: Top Langs</summary>
 
-  <img align="middle" alt="FebriCahyaa Top Langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&theme=dark(https://github.com/FebriCahyaa)" />
+  <img align="left" alt="FebriCahyaa Top Langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&theme=dark(https://github.com/FebriCahyaa)" />
 
 </detail>
