@@ -1,11 +1,45 @@
 ![image](https://github.com/FebriCahyaa/FebriCahyaa/assets/87246800/e271b1bb-fea5-4628-84ed-c46904f12909)
 
+```zsh
+root@febri:~#./start.sh
+```
 
-- 🇮🇩 I'm from Indonesia
-- 🎓 I’m a college student 
-- 📚 I'm currently learning C++, Java
-- 📫 How to reach me : [Telegram](https://t.me/Febr1Cahyaa)
-- 👨🏻 Pronouns: he/him/his
+```csharp
+    Human Information
+    ------------------------------------------
+    Name: Febrian
+    Lastname: Cahya
+    Nickname: Febrian
+    Gender: Male
+    Age: 19
+    Hobbies: ["Game"], ["Coding"], ["Linux"], ["Music"]
+    Languages: ["Indonesia"], ["English US"], ["Java"]
+    Occupation: Bogor
+```
+
+```csharp
+            .-/+oossssoo+/-.               root@febri
+        `:+ssssssssssssssssss+:`           ----------
+      -+ssssssssssssssssssyyssss+-         OS: Ubuntu 23.04 x86_64
+    .ossssssssssssssssssdMMMNysssso.       Host: Droplet 20171212
+   /ssssssssssshdmmNNmmyNMMMMhssssss/      Kernel: 6.2.0-32-generic
+  +ssssssssshmydMMMMMMMNddddyssssssss+     Uptime: 1 day, 18 hours, 21 mins
+ /sssssssshNMMMyhhyyyyhmNMMMNhssssssss/    Packages: 1180 (dpkg), 4 (snap)
+.ssssssssdMMMNhsssssssssshNMMMdssssssss.   Shell: bash 5.2.15
++sssshhhyNMMNyssssssssssssyNMMMysssssss+   Resolution: 1024x768
+ossyNMMMNyMMhsssssssssssssshmmmhssssssso   Terminal: /dev/pts/2
+ossyNMMMNyMMhsssssssssssssshmmmhssssssso   CPU: DO-Premium-AMD (8) @ 2.299GHz
++sssshhhyNMMNyssssssssssssyNMMMysssssss+   GPU: 00:02.0 Red Hat, Inc. Virtio GPU
+.ssssssssdMMMNhsssssssssshNMMMdssssssss.   Memory: 416MiB / 32087MiB
+ /sssssssshNMMMyhhyyyyhdNMMMNhssssssss/
+  +sssssssssdmydMMMMMMMMddddyssssssss+
+   /ssssssssssshdmNNNNmyNMMMMhssssss/
+    .ossssssssssssssssssdMMMNysssso.
+      -+sssssssssssssssssyyyssss+-
+        `:+ssssssssssssssssss+:`
+            .-/+oossssoo+/-.
+
+```
 
 <img src="https://madewithlove.now.sh/id?colorA=%23201d1d&colorB=%23e39393" alt="Made with love in Indonesia">
 
