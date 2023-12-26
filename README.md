@@ -34,6 +34,16 @@ root@febri:~#./start.sh
 <img src="https://readme-jokes.vercel.app/api?hideBorder&theme=cobalt&qColor=%23944bcc&aColor=%23bbdb51" alt="Jokes Card" />
 
 ---
+### :zap: Recent Activity
+
+<!--START_SECTION:activity-->
+1. 🗣 Commented on [#3457](https://github.com/hoppscotch/hoppscotch/pull/3457#issuecomment-1780571540) in [hoppscotch/hoppscotch](https://github.com/hoppscotch/hoppscotch)
+2. 🗣 Commented on [#3457](https://github.com/hoppscotch/hoppscotch/pull/3457#issuecomment-1779723653) in [hoppscotch/hoppscotch](https://github.com/hoppscotch/hoppscotch)
+3. 🗣 Commented on [#3457](https://github.com/hoppscotch/hoppscotch/pull/3457#issuecomment-1779402409) in [hoppscotch/hoppscotch](https://github.com/hoppscotch/hoppscotch)
+4. 💪 Opened PR [#3473](https://github.com/hoppscotch/hoppscotch/pull/3473) in [hoppscotch/hoppscotch](https://github.com/hoppscotch/hoppscotch)
+5. 💪 Opened PR [#3472](https://github.com/hoppscotch/hoppscotch/pull/3472) in [hoppscotch/hoppscotch](https://github.com/hoppscotch/hoppscotch)
+<!--END_SECTION:activity-->
+---
 
 ### Streak ##
 
