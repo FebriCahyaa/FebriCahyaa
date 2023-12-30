@@ -1,7 +1,7 @@
 {
   "name": "febricahyaa",
   "version": "1.0.0",
-  "description": "![image](https://github.com/FebriCahyaa/FebriCahyaa/assets/87246800/e271b1bb-fea5-4628-84ed-c46904f12909)",
+  "description": "Deskripsi proyek",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,8 +15,8 @@
   "bugs": {
     "url": "https://github.com/FebriCahyaa/FebriCahyaa/issues"
   },
-  "homepage": "https://github.com/FebriCahyaa/FebriCahyaa#README.md"
-  },
+  "homepage": "https://github.com/FebriCahyaa/FebriCahyaa#readme",
   "publishConfig": {
-  "FebriCahyaa:registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
