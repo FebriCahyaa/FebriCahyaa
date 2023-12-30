@@ -1,0 +1,19 @@
+{
+  "name": "febricahyaa",
+  "version": "1.0.0",
+  "description": "![image](https://github.com/FebriCahyaa/FebriCahyaa/assets/87246800/e271b1bb-fea5-4628-84ed-c46904f12909)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FebriCahyaa/FebriCahyaa.git"
+  },
+  "author": "FebriCahyaa <febricahya12345@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FebriCahyaa/FebriCahyaa/issues"
+  },
+  "homepage": "https://github.com/FebriCahyaa/FebriCahyaa#readme"
+}
