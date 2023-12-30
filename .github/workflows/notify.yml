@@ -32,3 +32,5 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: "6481626578:AAGGF58KHiqkUnmHHnVlaBHc3Tcqyh3eQD8"
           TELEGRAM_CHAT_ID: "6002298249"
+          GITHUB_REPOSITORY: "https://github.com/FebriCahyaa/FebriCahyaa"
+          GITHUB_SERVER_URL: "https://github.com"
