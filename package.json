@@ -19,5 +19,8 @@
   "homepage": "https://github.com/FebriCahyaa/FebriCahyaa#README.md",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.1"
   }
 }
