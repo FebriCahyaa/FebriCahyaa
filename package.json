@@ -4,7 +4,8 @@
   "description": "Deskripsi proyek",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format:check": "prettier --check '**/*.js'"
   },
   "repository": {
     "type": "git",
@@ -15,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/FebriCahyaa/FebriCahyaa/issues"
   },
-  "homepage": "https://github.com/FebriCahyaa/FebriCahyaa#readme",
+  "homepage": "https://github.com/FebriCahyaa/FebriCahyaa#README.md",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   }
