@@ -4,7 +4,7 @@
   "description": "Test Informan",
   "main": "index.js",
   "scripts": {
-    "test": "hello world!!"
+    "test": "echo 'hello world!!'"
   },
   "repository": {
     "type": "git",
