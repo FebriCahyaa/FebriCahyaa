@@ -24,10 +24,10 @@ jobs:
       - name: Send Notification
         run: |
           curl -s -X POST \
-            https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
-            -d "chat_id=$TELEGRAM_CHAT_ID" \
-            -d "text=🚀 New commit pushed to $GITHUB_REPOSITORY!\n\n$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA" \
-            -H "Content-Type: application/json"
+           https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage \
+           -d "chat_id=$TELEGRAM_CHAT_ID" \
+           -d "text=🚀 New commit pushed to $GITHUB_REPOSITORY!\n\n$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA" \
+           -H "Content-Type: application/json"
         env:
           TELEGRAM_BOT_TOKEN: 6481626578:AAGGF58KHiqkUnmHHnVlaBHc3Tcqyh3eQD8
           TELEGRAM_CHAT_ID: 6002298249
