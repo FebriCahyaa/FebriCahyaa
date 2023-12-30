@@ -16,4 +16,7 @@
     "url": "https://github.com/FebriCahyaa/FebriCahyaa/issues"
   },
   "homepage": "https://github.com/FebriCahyaa/FebriCahyaa#readme"
+  },
+  "publishConfig": {
+  "FebriCahyaa:registry": "https://npm.pkg.github.com"
 }
