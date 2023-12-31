@@ -9,5 +9,4 @@
 <detail>
   <summary>:zap: Github Stats</summary>
   <img align="left" alt="FebriCahyaa Github Stats" src="https://github-readme-stats-gp89yoxi9-febricahyaas-projects.vercel.app/api?username=FebriCahyaa&show_icons=true&hide_border=true&theme=aura_dark" />
-  <img align="left" alt="FebriCahyaa Top Langs" src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&theme=aura_dark(https://github.com/FebriCahyaa)" />
 </detail>
