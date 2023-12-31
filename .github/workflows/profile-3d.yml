@@ -1,0 +1,48 @@
+name: GitHub-Profile-3D-Contrib
+
+on:
+  schedule:
+    - cron: "* * * * *"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: generate-github-profile-3d-contrib
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm install github-profile-3d-contrib
+
+      - name: Run GitHub Profile 3D Contrib
+        run: npx github-profile-3d-contrib --username ${{ github.repository_owner }} --grid
+
+      - name: Commit & Push
+        run: |
+          git config user.name "FebriCahyaa"
+          git config user.email "febricahya12345@gmail.com"
+          git add -A .
+          git commit -m "Update GitHub Profile 3D Contribution"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+  trigger-workflow:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Run Trigger Script
+        run: |
+          ./trigger_workflow.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
