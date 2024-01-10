@@ -67,6 +67,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Grant execute permission
+        run: chmod +x ./trigger_workflow.sh
+
       - name: Run Trigger Script
         run: |
           ./trigger_workflow.sh
