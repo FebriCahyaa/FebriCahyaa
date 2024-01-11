@@ -6,6 +6,8 @@
 
 <p align="center"> <img src="https://komarev.com/ghpvc/?username=FebriCahyaa&style=flat-square" alt="FebriCahyaa" /> </p>
 
+[![Metrics and Trigger Workflow](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/main.yml/badge.svg?branch=main&event=workflow_run)](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/main.yml)
+
 <detail>
   <summary>:zap: Github Stats</summary>
   <img align="left" alt="FebriCahyaa Github Stats" src="https://github-readme-stats-gp89yoxi9-febricahyaas-projects.vercel.app/api?username=FebriCahyaa&show_icons=true&hide_border=true&theme=aura_dark" />
