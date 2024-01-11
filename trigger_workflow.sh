@@ -1,4 +1,3 @@
-ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true
 curl -X PUT -H "Authorization: token ${{ secrets.TOKEN }}" \
   -H "Accept: application/vnd.github.v3+json" \
   https://api.github.com/repos/${{ secrets.USERNAME }}/${{ secrets.REPO }}/contents/${{ secrets.PATH_TO_FILE }} \
