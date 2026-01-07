@@ -1,12 +1,14 @@
 name: Build
 
 on:
-  workflow_dispatch:  # trigger manual
+  workflow_dispatch:
+
   push:
     branches:
-      - main        # pastikan branch sesuai default branch repo
+      - main
+
   schedule:
-    - cron: "0 * * * *"  # setiap jam
+    - cron: "0 * * * *"
 
 jobs:
   build:
@@ -14,11 +16,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v6
 
-      # 2️⃣ Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
@@ -42,20 +42,17 @@ jobs:
         id: build
         run: npm run build
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # PAT digunakan untuk push nanti
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 
       # 6️⃣ Commit changes
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: |
-            Update README.md (${{steps.build.outputs.TIMESTAMP}})
-
-            Extended Description:
-            - Files updated: README.md, last-dev-commit.txt
-            - Triggered by: workflow_dispatch / push / schedule
+          message: Update README.md (${{steps.build.outputs.TIMESTAMP}})
+          #author_name: "FebriCahyaa"
+          #author_email: "87246800+FebriCahyaa@users.noreply.github.com"
           add: README.md last-dev-commit.txt --force
-          branch: main     # pastikan sama dengan default branch repo
+          branch: main
           push: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}  # wajib PAT agar push berhasil
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
