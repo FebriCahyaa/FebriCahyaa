@@ -1,0 +1,22 @@
+name: Reset to `dev` Branch
+
+on: 
+  push:
+    branches:
+      - dev
+
+jobs:
+  reset:
+    name: Reset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_PAT }}
+          ref: master
+      - name: Reset master to dev
+        run: |
+          git fetch origin dev
+          git reset --hard origin/dev
+          git push --force origin
