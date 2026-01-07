@@ -5,7 +5,7 @@ on:
 
   push:
     branches:
-      - main
+      - master
 
   schedule:
     - cron: "0 * * * *"
@@ -52,7 +52,7 @@ jobs:
           author_name: "FebriCahyaa"
           author_email: "87246800+FebriCahyaa@users.noreply.github.com"
           add: README.md last-dev-commit.txt --force
-          branch: main
+          branch: master
           push: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
