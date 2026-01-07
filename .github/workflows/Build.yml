@@ -49,8 +49,8 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: Update README.md (${{steps.build.outputs.TIMESTAMP}})
-          author_name: "FebriCahyaa"
-          author_email: "87246800+FebriCahyaa@users.noreply.github.com"
+          #author_name: "FebriCahyaa"
+          #author_email: "87246800+FebriCahyaa@users.noreply.github.com"
           add: README.md last-dev-commit.txt --force
           branch: main
           push: true
