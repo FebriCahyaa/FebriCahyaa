@@ -87,8 +87,8 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           message: Update lowlighter/metrics
-          #author_name: FebriCahyaa
-          #author_email: 87246800+FebriCahyaa@users.noreply.github.com
+          author_name: FebriCahyaa
+          author_email: 87246800+FebriCahyaa@users.noreply.github.com
           add: github-metrics.* --force
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
