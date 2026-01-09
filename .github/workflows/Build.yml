@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -39,11 +38,10 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
+          github_token: ${{ secrets.GH_PAT }}
           message: "Update README.md"
           author_name: "FebriCahyaa"
           author_email: "87246800+FebriCahyaa@users.noreply.github.com"
-          add: README.md last-dev-commit.txt --force
+          add: "README.md last-dev-commit.txt --force"
           branch: main
           push: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
