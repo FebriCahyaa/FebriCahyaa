@@ -30,6 +30,15 @@
 - 💬 Ask me about `Software Engineering`.
 - ✨ Enjoy my GitHub profile.
 <details>
+  <summary>Last Update</summary>
+
+<!-- LAST_UPDATED_START -->
+⏳ Last updated: Loading...
+<!-- LAST_UPDATED_END -->
+
+</details>
+
+<details>
   <summary>My Device use</summary>
 
 ## 📱 Devices

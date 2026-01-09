@@ -1,0 +1,34 @@
+name: Update Profile Time
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-time:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set timezone & update README
+        run: |
+          TZ="Asia/Jakarta"
+          TIME=$(date +"%Y-%m-%d %H:%M:%S")
+          ZONE="WIB (UTC+7)"
+
+          TEXT="⏳ Last updated: **$TIME** — **$ZONE**"
+
+          sed -i "/<!-- LAST_UPDATED_START -->/,/<!-- LAST_UPDATED_END -->/c\
+          <!-- LAST_UPDATED_START -->\n$TEXT\n<!-- LAST_UPDATED_END -->" README.md
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore: update profile timestamp"
+          add: "README.md"
