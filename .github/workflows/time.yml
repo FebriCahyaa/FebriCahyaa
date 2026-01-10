@@ -1,0 +1,35 @@
+name: Update Time & Status
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set time & status
+        run: |
+          HOUR=$(TZ=Asia/Jakarta date +"%H")
+          TIME=$(TZ=Asia/Jakarta date +"%I:%M %p")
+
+          if [ "$HOUR" -ge 8 ] && [ "$HOUR" -lt 24 ]; then
+            STATUS="Online"
+            MSG="I'm online, doing stuff, and able to respond to inquiries."
+          else
+            STATUS="Offline"
+            MSG="I'm offline right now, will respond later."
+          fi
+
+          sed -i "s|<!--TIME-->.*<!--/TIME-->|<!--TIME-->$TIME<!--/TIME-->|" README.md
+          sed -i "s|<!--STATUS-->.*<!--/STATUS-->|<!--STATUS-->$STATUS<!--/STATUS-->|" README.md
+          sed -i "/<!--STATUS_MSG-->/, /<!--\/STATUS_MSG-->/c\\<!--STATUS_MSG-->\\n$MSG\\n<!--/STATUS_MSG-->" README.md
+
+      - name: Commit update
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Auto update time & online status"
