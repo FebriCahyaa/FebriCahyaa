@@ -45,7 +45,7 @@
 I'm online, doing stuff, and able to respond to inquiries.
 <!--/STATUS_MSG-->
 
-*Commit hash:* <!-- COMMIT_HASH -->
+*Commit hash:* [`c0aa365`](https://github.com/FebriCahyaa/FebriCahyaa/commit/c0aa365debed69a9ed94d8faf156d693bb9adb45) <!-- COMMIT_HASH -->
 <a href="https://github.com/FebriCahyaa/FebriCahyaa/actions?query=workflow%3ABuild">
   <img src="https://img.shields.io/github/actions/workflow/status/FebriCahyaa/FebriCahyaa/Build.yml?style=flat-square" align="right" />
 </a>
