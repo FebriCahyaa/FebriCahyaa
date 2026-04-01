@@ -38,11 +38,11 @@
 
 ### FYI
 
-⏰ **<!--TIME-->11:37 PM<!--/TIME-->** (Jakarta)  
-📡 Status: **<!--STATUS-->Online<!--/STATUS-->**
+⏰ **<!--TIME-->12:32 AM<!--/TIME-->** (Jakarta)  
+📡 Status: **<!--STATUS-->Offline<!--/STATUS-->**
 
 <!--STATUS_MSG-->
-I'm online, doing stuff, and able to respond to inquiries.
+I'm offline right now, will respond later.
 <!--/STATUS_MSG-->
 
 *Commit hash:* [`c0aa365`](https://github.com/FebriCahyaa/FebriCahyaa/commit/c0aa365debed69a9ed94d8faf156d693bb9adb45) <!-- COMMIT_HASH -->
