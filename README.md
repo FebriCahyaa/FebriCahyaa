@@ -10,11 +10,11 @@
   </a>
 </p>
 
+<img src="https://user-images.githubusercontent.com/74038190/225813708-98b745f2-7d22-48cf-9150-083f1b00d6c9.gif" width="400" />
+
 </div>
 
 ---
-
-<img align="right" width="220" src="https://user-images.githubusercontent.com/74038190/225813708-98b745f2-7d22-48cf-9150-083f1b00d6c9.gif" />
 
 ## <img src="https://user-images.githubusercontent.com/74038190/212744287-14f66c13-5458-40dc-9244-8ff533fc8f4a.gif" width="30"> About Me
 
@@ -24,8 +24,6 @@
 - 🐍 Python developer for tooling & automation
 - 💡 Interested in contributing to Open Source
 - 💬 Ask me about Android internals, Linux, or system engineering
-
-<br clear="right"/>
 
 ---
 
@@ -87,8 +85,12 @@
 <br/>
 
 <div align="center">
-  <img height="160em" src="https://github-readme-stats.vercel.app/api?username=FebriCahyaa&show_icons=true&theme=tokyonight&include_all_commits=true&count_private=true"/>
-  <img height="160em" src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&langs_count=7&theme=tokyonight"/>
+  <img src="https://github-readme-stats.vercel.app/api?username=FebriCahyaa&show_icons=true&theme=tokyonight&include_all_commits=true&count_private=true&hide_border=true" width="49%" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&langs_count=7&theme=tokyonight&hide_border=true" width="41%" />
+</div>
+
+<div align="center">
+  <img src="https://streak-stats.demolab.com?user=FebriCahyaa&theme=tokyonight&hide_border=true" width="60%" />
 </div>
 
 </details>
