@@ -159,7 +159,7 @@
 I'm offline right now, will respond later.
 <!--/STATUS_MSG-->
 
-*Commit hash:* [`b062d41`](https://github.com/FebriCahyaa/FebriCahyaa/commit/b062d41f6374b5d84deb705a3139cb1ee3a02ae5) <!-- COMMIT_HASH -->
+*Commit hash:* [`67467cf`](https://github.com/FebriCahyaa/FebriCahyaa/commit/67467cfd48cd7c11af1085a9d7e84c912e9ebeb9) <!-- COMMIT_HASH -->
 <a href="https://github.com/FebriCahyaa/FebriCahyaa/actions?query=workflow%3ABuild">
   <img src="https://img.shields.io/github/actions/workflow/status/FebriCahyaa/FebriCahyaa/Build.yml?style=flat-square" align="right" />
 </a>
