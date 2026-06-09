@@ -1,0 +1,68 @@
+name: Update GitHub Stats
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # setiap hari jam 00:00 UTC (07:00 WIB)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch stats data
+        id: stats
+        run: |
+          # Ambil data repo count, star, fork dari GitHub API
+          USER="FebriCahyaa"
+
+          USER_DATA=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" \
+            "https://api.github.com/users/$USER")
+
+          PUBLIC_REPOS=$(echo "$USER_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['public_repos'])")
+          FOLLOWERS=$(echo "$USER_DATA" | python3 -c "import sys,json; print(json.load(sys.stdin)['followers'])")
+
+          # Hitung total stars dan forks dari semua repo
+          PAGE=1
+          TOTAL_STARS=0
+          TOTAL_FORKS=0
+          while true; do
+            REPOS=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" \
+              "https://api.github.com/users/$USER/repos?per_page=100&page=$PAGE")
+            COUNT=$(echo "$REPOS" | python3 -c "import sys,json; d=json.load(sys.stdin); print(len(d))")
+            if [ "$COUNT" -eq 0 ]; then break; fi
+            STARS=$(echo "$REPOS" | python3 -c "import sys,json; print(sum(r['stargazers_count'] for r in json.load(sys.stdin)))")
+            FORKS=$(echo "$REPOS" | python3 -c "import sys,json; print(sum(r['forks_count'] for r in json.load(sys.stdin)))")
+            TOTAL_STARS=$((TOTAL_STARS + STARS))
+            TOTAL_FORKS=$((TOTAL_FORKS + FORKS))
+            PAGE=$((PAGE + 1))
+          done
+
+          echo "public_repos=$PUBLIC_REPOS" >> $GITHUB_OUTPUT
+          echo "followers=$FOLLOWERS"       >> $GITHUB_OUTPUT
+          echo "total_stars=$TOTAL_STARS"   >> $GITHUB_OUTPUT
+          echo "total_forks=$TOTAL_FORKS"   >> $GITHUB_OUTPUT
+
+      - name: Update stats in README
+        run: |
+          REPOS="${{ steps.stats.outputs.public_repos }}"
+          STARS="${{ steps.stats.outputs.total_stars }}"
+          FORKS="${{ steps.stats.outputs.total_forks }}"
+          FOLLOWERS="${{ steps.stats.outputs.followers }}"
+
+          sed -i "s|<!--STATS_REPOS-->.*<!--/STATS_REPOS-->|<!--STATS_REPOS-->$REPOS<!--/STATS_REPOS-->|" README.md
+          sed -i "s|<!--STATS_STARS-->.*<!--/STATS_STARS-->|<!--STATS_STARS-->$STARS<!--/STATS_STARS-->|" README.md
+          sed -i "s|<!--STATS_FORKS-->.*<!--/STATS_FORKS-->|<!--STATS_FORKS-->$FORKS<!--/STATS_FORKS-->|" README.md
+          sed -i "s|<!--STATS_FOLLOWERS-->.*<!--/STATS_FOLLOWERS-->|<!--STATS_FOLLOWERS-->$FOLLOWERS<!--/STATS_FOLLOWERS-->|" README.md
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore(stats): auto-update GitHub stats"
+          add: "README.md"

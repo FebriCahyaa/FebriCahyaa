@@ -1,0 +1,87 @@
+name: Update Typing SVG
+
+on:
+  schedule:
+    - cron: "0 0 * * 1"  # setiap Senin jam 00:00 UTC
+  workflow_dispatch:
+    inputs:
+      lines:
+        description: "Baris teks dipisah semicolon (contoh: Hello;World)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  update-typing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Typing SVG URL
+        id: build
+        run: |
+          # Jika manual dispatch dengan input lines, pakai itu.
+          # Jika tidak, gunakan lines default yang sudah dikurasi.
+          INPUT_LINES="${{ github.event.inputs.lines }}"
+
+          if [ -n "$INPUT_LINES" ]; then
+            LINES="$INPUT_LINES"
+          else
+            # Ambil commit terbaru Flux untuk dimasukkan sebagai baris dinamis
+            FLUX_SHA=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" \
+              "https://api.github.com/repos/FebriCahyaa/Flux/commits/main" \
+              | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('sha','')[:7])" 2>/dev/null || echo "")
+
+            if [ -n "$FLUX_SHA" ]; then
+              LINES="Android %26 Linux Developer;Kotlin %2F Java %2F Python;System-Level Engineering;Flux @ $FLUX_SHA;Always Learning 🚀"
+            else
+              LINES="Android %26 Linux Developer;Kotlin %2F Java %2F Python;System-Level Engineering;Always Learning 🚀"
+            fi
+          fi
+
+          # URL-encode lines (spasi → +, sudah handle & dan / di atas)
+          ENCODED=$(python3 -c "
+          import urllib.parse, sys
+          raw = sys.argv[1]
+          parts = raw.split(';')
+          encoded = [urllib.parse.quote(p, safe='%+') for p in parts]
+          print(';'.join(encoded))
+          " "$LINES")
+
+          BASE="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=900&size=22&pause=1000&color=15BDDC&center=true&vCenter=true&width=435"
+          NEW_URL="${BASE}&lines=${ENCODED}"
+
+          echo "new_url=$NEW_URL" >> $GITHUB_OUTPUT
+
+      - name: Inject into README
+        run: |
+          NEW_URL="${{ steps.build.outputs.new_url }}"
+          # Ganti seluruh src="https://readme-typing-svg.demolab.com?..." di img tag
+          python3 - "$NEW_URL" << 'PYEOF'
+          import sys, re
+
+          new_url = sys.argv[1]
+          with open("README.md", "r") as f:
+              content = f.read()
+
+          content = re.sub(
+              r'(src=")https://readme-typing-svg\.demolab\.com\?[^"]*(")',
+              rf'\g<1>{new_url}\g<2>',
+              content
+          )
+
+          with open("README.md", "w") as f:
+              f.write(content)
+
+          print("Typing SVG updated.")
+          PYEOF
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore(readme): update typing SVG lines"
+          add: "README.md"

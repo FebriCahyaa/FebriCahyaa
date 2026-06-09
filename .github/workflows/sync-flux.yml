@@ -1,0 +1,51 @@
+name: Sync Flux Latest Commit
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"  # setiap 30 menit
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-flux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch latest Flux commit
+        id: flux
+        run: |
+          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.TOKEN_GITHUB }}" \
+            "https://api.github.com/repos/FebriCahyaa/Flux/commits/main")
+
+          SHA=$(echo "$RESPONSE"     | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['sha'][:7])")
+          SHA_FULL=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['sha'])")
+          MSG=$(echo "$RESPONSE"     | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['commit']['message'].splitlines()[0][:60])")
+          DATE=$(echo "$RESPONSE"    | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['commit']['author']['date'][:10])")
+
+          echo "sha=$SHA"           >> $GITHUB_OUTPUT
+          echo "sha_full=$SHA_FULL" >> $GITHUB_OUTPUT
+          echo "msg=$MSG"           >> $GITHUB_OUTPUT
+          echo "date=$DATE"         >> $GITHUB_OUTPUT
+
+      - name: Update README
+        run: |
+          SHA="${{ steps.flux.outputs.sha }}"
+          SHA_FULL="${{ steps.flux.outputs.sha_full }}"
+          MSG="${{ steps.flux.outputs.msg }}"
+          DATE="${{ steps.flux.outputs.date }}"
+
+          LINK="https://github.com/FebriCahyaa/Flux/commit/$SHA_FULL"
+          NEW="<!--FLUX_COMMIT-->[`$SHA`]($LINK) — $MSG ($DATE)<!--/FLUX_COMMIT-->"
+
+          sed -i "s|<!--FLUX_COMMIT-->.*<!--/FLUX_COMMIT-->|$NEW|" README.md
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "chore(sync): update Flux latest commit → ${{ steps.flux.outputs.sha }}"
+          add: "README.md"
