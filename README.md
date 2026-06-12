@@ -152,11 +152,11 @@
 ⏳ Last updated: **2026-06-12 16:35:07** — **WIB (UTC+7)**
 <!-- LAST_UPDATED_END -->
 
-⏰ **<!--TIME-->09:14 PM<!--/TIME-->** (Jakarta)
-📡 Status: **<!--STATUS-->Online<!--/STATUS-->**
+⏰ **<!--TIME-->12:15 AM<!--/TIME-->** (Jakarta)
+📡 Status: **<!--STATUS-->Offline<!--/STATUS-->**
 
 <!--STATUS_MSG-->
-I'm online, doing stuff, and able to respond to inquiries.
+I'm offline right now, will respond later.
 <!--/STATUS_MSG-->
 
 *Commit hash:* [`d1ee093`](https://github.com/FebriCahyaa/FebriCahyaa/commit/d1ee0933d95b4c2a7302105ff3e8514339616d56) <!-- COMMIT_HASH -->
