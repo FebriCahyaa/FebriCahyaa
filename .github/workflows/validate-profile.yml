@@ -1,0 +1,36 @@
+name: Validate Profile
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+          cache: false
+
+      - name: Compile updater
+        run: python3 -m py_compile scripts/update_profile.py
+
+      - name: Validate README markers
+        run: python3 scripts/update_profile.py --check
+
+      - name: Run updater unit tests
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Validate banner SVG
+        run: python3 -c "import xml.etree.ElementTree as ET; ET.parse('assets/profile-hero.svg'); print('Banner SVG is valid XML.')"

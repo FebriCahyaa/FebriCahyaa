@@ -47,3 +47,11 @@ jspm_packages/
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Python tooling
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Generated artifacts
+dist/

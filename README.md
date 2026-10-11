@@ -1,173 +1,179 @@
-<img src="https://raw.githubusercontent.com/BEPb/BEPb/5c63fa170d1cbbb0b1974f05a3dbe6aca3f5b7f3/assets/Bottom_up.svg" width="100%" />
-
 <div align="center">
+  <img src="assets/profile-hero.svg" alt="Febri Cahya — Android, Linux and systems engineering" width="100%" />
 
-<h1 align="center">Hi, I'm Febri <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="30px"/></h1>
+  <p>
+    <a href="https://github.com/FebriCahyaa"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-FebriCahyaa-1B1B23?style=for-the-badge&logo=github&logoColor=white"></a>
+    <a href="https://github.com/FebriCahyaa?tab=repositories"><img alt="Explore repositories" src="https://img.shields.io/badge/Explore-Projects-6750A4?style=for-the-badge&logo=github&logoColor=white"></a>
+    <a href="https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/profile-refresh.yml"><img alt="Profile refresh workflow" src="https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/profile-refresh.yml/badge.svg"></a>
+  </p>
 
-<p align="center">
-  <a href="https://git.io/typing-svg">
-    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=900&size=22&pause=1000&color=15BDDC&center=true&vCenter=true&width=435&lines=Android%20%26%20Linux%20Developer;Kotlin%20%2F%20Java%20%2F%20Python;System-Level%20Engineering;Flux%20%40%20b75491c;Always%20Learning%20%F0%9F%9A%80" alt="Typing SVG" />
-  </a>
-</p>
+  <h3>Android internals · Linux systems · Kernel engineering · Developer tooling</h3>
+  <p>Building practical tools that make devices more observable, configurable, and reliable.</p>
 
-<img src="https://user-images.githubusercontent.com/74038190/225813708-98b745f2-7d22-48cf-9150-083f1b00d6c9.gif" width="400" />
-
+  <p>
+    <a href="#featured-work">Featured work</a> ·
+    <a href="#toolbox">Toolbox</a> ·
+    <a href="#github-activity">GitHub activity</a> ·
+    <a href="#connect">Connect</a>
+  </p>
 </div>
 
 ---
 
-## <img src="https://user-images.githubusercontent.com/74038190/212744287-14f66c13-5458-40dc-9244-8ff533fc8f4a.gif" width="30"> About Me
+## 👋 About me
 
-- 🤖 Android & Linux low-level developer focused on **system daemons & performance**
-- 🔧 Building **[SynthesisCore](https://github.com/FebriCahyaa/SynthesisCore)** — a Java/Kotlin daemon via `app_process` that monitors Android system state in real-time
-- ⚡ Building **[Flux](https://github.com/FebriCahyaa/Flux)** — a Magisk/KernelSU/APatch module for performance profile management
-- 🐍 Python developer for tooling & automation
-- 💡 Interested in contributing to Open Source
-- 💬 Ask me about Android internals, Linux, or system engineering
+I'm **Febri Rahmad Cahya**, an independent developer interested in the layers beneath the interface: Android system services, Linux, kernel development, thermal and performance control, and automation infrastructure.
 
----
+- **Systems:** Android internals, Linux, shell tooling, device integration, and performance observability.
+- **Android:** Java/Kotlin services, `app_process`, root-module integration, and system-state monitoring.
+- **Kernel & build engineering:** kernel source workflows, patch validation, toolchain setup, and CI automation.
+- **Developer experience:** maintainable tooling, clear diagnostics, reproducible builds, and documentation that stays useful.
 
-## 🚀 Featured Projects
+I value engineering that is measurable, understandable, and safe to operate—not tweaks that merely look impressive in a benchmark.
+
+## 🧭 Featured work
 
 <table>
   <tr>
-    <td align="center" width="50%">
-      <a href="https://github.com/FebriCahyaa/SynthesisCore">
-        <b>🧠 SynthesisCore</b>
-      </a>
-      <br/>
-      <sub>Java/Kotlin daemon via <code>app_process</code> — monitors charging state, thermal status, headset, and more in real-time</sub>
+    <td width="50%" valign="top">
+      <h3>⚡ <a href="https://github.com/FebriCahyaa/Flux">Flux</a></h3>
+      <p>Android performance-profile tooling for supported root environments, designed around configurable modes and system-aware behavior.</p>
+      <p><sub>ANDROID · ROOT MODULE · PERFORMANCE</sub></p>
     </td>
-    <td align="center" width="50%">
-      <a href="https://github.com/FebriCahyaa/Flux">
-        <b>⚡ Flux</b>
-      </a>
-      <br/>
-      <sub>Magisk / KernelSU / APatch module — consumes SynthesisCore data to manage Android performance profiles</sub>
+    <td width="50%" valign="top">
+      <h3>🧠 <a href="https://github.com/FebriCahyaa/SynthesisCore">SynthesisCore</a></h3>
+      <p>A Java/Kotlin system daemon using <code>app_process</code> to observe device state such as charging and thermal signals.</p>
+      <p><sub>JAVA · KOTLIN · SYSTEM SERVICES</sub></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <h3>🌡️ <a href="https://github.com/FebriCahyaa/HiCo">HiCo</a></h3>
+      <p>Thermal knowledge and ingestion tooling for organizing device profiles, configuration artifacts, and source relationships.</p>
+      <p><sub>PYTHON · THERMAL DATA · TOOLING</sub></p>
+    </td>
+    <td width="50%" valign="top">
+      <h3>🛠️ <a href="https://github.com/FebriCahyaa/ci-build">Kernel CI Build</a></h3>
+      <p>Build and validation automation for kernel workflows, patch sets, toolchains, and packaging handoffs.</p>
+      <p><sub>GITHUB ACTIONS · SHELL · KERNELS</sub></p>
     </td>
   </tr>
 </table>
 
----
+<p align="center"><sub>Project descriptions are intentionally concise; open each repository for the current implementation, compatibility notes, and status.</sub></p>
 
-<details>
-  <summary>🛠️ Technical Skills</summary>
+## 🧰 Toolbox
 
-<img width="100%" loading="lazy" src="https://github.com/SamirPaulb/SamirPaulb/raw/main/assets/rainbow-superthin.webp" />
-
-<h3>Programming Languages</h3>
-
-<a href="https://skillicons.dev">
-  <img src="https://skillicons.dev/icons?i=kotlin,java,cpp,c,py" />
-</a>
-
-<h3>Android & System</h3>
-
-<a href="https://skillicons.dev">
-  <img src="https://skillicons.dev/icons?i=androidstudio,gradle,bash,linux" />
-</a>
-
-<h3>⚙️ DevOps & Tools</h3>
-
-<a href="https://skillicons.dev">
-  <img src="https://skillicons.dev/icons?i=git,github,gitlab,vscode,cmake,docker" />
-</a>
-
-<img width="100%" loading="lazy" src="https://github.com/SamirPaulb/SamirPaulb/raw/main/assets/rainbow-superthin.webp" />
-
+<details open>
+  <summary><strong>Languages & runtime</strong></summary>
+  <br />
+  <p>
+    <img alt="Kotlin" src="https://skillicons.dev/icons?i=kotlin" height="42" />
+    <img alt="Java" src="https://skillicons.dev/icons?i=java" height="42" />
+    <img alt="Python" src="https://skillicons.dev/icons?i=py" height="42" />
+    <img alt="C" src="https://skillicons.dev/icons?i=c" height="42" />
+    <img alt="C++" src="https://skillicons.dev/icons?i=cpp" height="42" />
+    <img alt="Bash" src="https://skillicons.dev/icons?i=bash" height="42" />
+  </p>
 </details>
 
----
+<details>
+  <summary><strong>Android, Linux & build systems</strong></summary>
+  <br />
+  <p>
+    <img alt="Android Studio" src="https://skillicons.dev/icons?i=androidstudio" height="42" />
+    <img alt="Linux" src="https://skillicons.dev/icons?i=linux" height="42" />
+    <img alt="Ubuntu" src="https://skillicons.dev/icons?i=ubuntu" height="42" />
+    <img alt="Gradle" src="https://skillicons.dev/icons?i=gradle" height="42" />
+    <img alt="CMake" src="https://skillicons.dev/icons?i=cmake" height="42" />
+    <img alt="Docker" src="https://skillicons.dev/icons?i=docker" height="42" />
+  </p>
+</details>
 
 <details>
-  <summary>📊 GitHub Stats</summary>
+  <summary><strong>Source control & automation</strong></summary>
+  <br />
+  <p>
+    <img alt="Git" src="https://skillicons.dev/icons?i=git" height="42" />
+    <img alt="GitHub" src="https://skillicons.dev/icons?i=github" height="42" />
+    <img alt="GitHub Actions" src="https://skillicons.dev/icons?i=githubactions" height="42" />
+    <img alt="VS Code" src="https://skillicons.dev/icons?i=vscode" height="42" />
+  </p>
+</details>
 
-<br/>
+## 📈 GitHub activity
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <strong>Public repositories</strong><br />
+      <h2><!-- METRIC_REPOS_START -->—<!-- METRIC_REPOS_END --></h2>
+    </td>
+    <td align="center" width="25%">
+      <strong>Stars earned</strong><br />
+      <h2><!-- METRIC_STARS_START -->—<!-- METRIC_STARS_END --></h2>
+    </td>
+    <td align="center" width="25%">
+      <strong>Forks received</strong><br />
+      <h2><!-- METRIC_FORKS_START -->—<!-- METRIC_FORKS_END --></h2>
+    </td>
+    <td align="center" width="25%">
+      <strong>Followers</strong><br />
+      <h2><!-- METRIC_FOLLOWERS_START -->—<!-- METRIC_FOLLOWERS_END --></h2>
+    </td>
+  </tr>
+</table>
+
+<p align="center"><sub>Metrics are refreshed by GitHub Actions and cover public profile data. Stars and forks are summed across original public repositories, excluding forks owned by this account.</sub></p>
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=FebriCahyaa&show_icons=true&theme=tokyonight&include_all_commits=true&count_private=true&hide_border=true" width="49%" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&langs_count=7&theme=tokyonight&hide_border=true" width="41%" />
+  <img src="https://github-readme-stats.vercel.app/api?username=FebriCahyaa&show_icons=true&hide_border=true&rank_icon=github&theme=transparent&title_color=6750A4&icon_color=B7A4FF&text_color=8C8996" alt="GitHub overview statistics" width="49%" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=FebriCahyaa&layout=compact&hide_border=true&theme=transparent&title_color=6750A4&text_color=8C8996" alt="Most used languages by repository size" width="40%" />
 </div>
 
 <div align="center">
-  <img src="https://streak-stats.demolab.com?user=FebriCahyaa&theme=tokyonight&hide_border=true" width="60%" />
+  <img src="https://streak-stats.demolab.com?user=FebriCahyaa&hide_border=true&theme=transparent&ring=6750A4&fire=E86A92&currStreakLabel=6750A4" alt="GitHub contribution streak" width="60%" />
 </div>
 
-</details>
+> **How to read these cards:** third-party stats cards can be delayed or temporarily unavailable. The repository metrics above are generated directly from the GitHub API by this repository's own workflow.
 
----
+## 🔭 Latest Flux update
 
-<details>
-  <summary>📱 Devices</summary>
+<!-- FLUX_LATEST_START -->
+Flux commit information will appear after the first successful profile refresh.
+<!-- FLUX_LATEST_END -->
 
-<br/>
-
-| Device | Role |
-|--------|------|
-| Redmi Note 13 Pro 5G / Poco X6 | Daily driver & testing |
-| Redmi Note 7 | Secondary test device |
-| iPhone 12 | iOS testing |
-| HP Victus 15 FA1518TX | Development & builds |
-
-</details>
-
----
-
-<details>
-  <summary><img src="https://user-images.githubusercontent.com/74038190/235294016-6556559a-ed58-4ca6-a4c9-c307cbe0b6b7.gif" width="20"> Social Media</summary>
-
-<img width="100%" loading="lazy" src="https://github.com/SamirPaulb/SamirPaulb/raw/main/assets/rainbow-superthin.webp" />
-
-<br/>
-
-<a href="https://www.facebook.com/share/1DUL7gKn4U/" target="_blank"><img src="https://github.com/dheereshagrwal/colored-icons/raw/master/public/logos/social%20media/facebook/facebook.svg" alt="Facebook" height="40" width="35" /></a>
-&nbsp;
-<a href="https://wa.me/085155345564" target="_blank"><img src="https://github.com/dheereshagrwal/colored-icons/raw/master/public/logos/social%20media/whatsapp/whatsapp.svg" alt="WhatsApp" height="40" width="35" /></a>
-&nbsp;
-<a href="https://t.me/FebriCahyaaaaa" target="_blank"><img src="https://github.com/dheereshagrwal/colored-icons/raw/master/public/logos/social%20media/telegram/telegram.svg" alt="Telegram" height="40" width="35" /></a>
-&nbsp;
-<a href="https://instagram.com/fbri.chy" target="_blank"><img src="https://github.com/dheereshagrwal/colored-icons/raw/master/public/logos/social%20media/instagram/instagram.svg" alt="Instagram" height="40" width="35" /></a>
-
-<img width="100%" loading="lazy" src="https://github.com/SamirPaulb/SamirPaulb/raw/main/assets/rainbow-superthin.webp" />
-
-</details>
-
----
-
-## 🐍 Snake Eating My Contributions
+## 🐍 Contribution trail
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/github-contribution-grid-snake-dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/github-contribution-grid-snake.svg">
-    <img alt="github contribution grid snake animation" src="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/github-contribution-grid-snake.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/github-contribution-grid-snake-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/github-contribution-grid-snake.svg" />
+    <img alt="Animated GitHub contribution graph" src="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/github-contribution-grid-snake.svg" width="100%" />
   </picture>
+</p>
+
+## 🕒 Profile automation
+
+| Signal | Value |
+|:--|:--|
+| Last refreshed | <!-- PROFILE_UPDATED_START -->Waiting for the first workflow run<!-- PROFILE_UPDATED_END --> |
+| Refresh cadence | Every 6 hours, plus manual dispatch |
+| Workflow | [Profile refresh](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/profile-refresh.yml) |
+| Quality checks | [Validate profile](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/validate-profile.yml) |
+
+The README refresh updates the profile metrics and latest Flux commit. It does not claim that I'm online or available based on a clock, because a scheduled workflow cannot reliably infer my availability.
+
+## 🤝 Connect
+
+<p>
+  <a href="https://github.com/FebriCahyaa"><img alt="GitHub" src="https://img.shields.io/badge/GitHub-Follow-1B1B23?style=for-the-badge&logo=github&logoColor=white" /></a>
+  <a href="https://t.me/FebriCahyaaaaa"><img alt="Telegram" src="https://img.shields.io/badge/Telegram-Message-229ED9?style=for-the-badge&logo=telegram&logoColor=white" /></a>
+  <a href="https://instagram.com/fbri.chy"><img alt="Instagram" src="https://img.shields.io/badge/Instagram-Connect-C13584?style=for-the-badge&logo=instagram&logoColor=white" /></a>
 </p>
 
 ---
 
-### ⏱️ Status
-
-<!-- LAST_UPDATED_START -->
-⏳ Last updated: **2026-10-11 01:16:25** — **WIB (UTC+7)**
-<!-- LAST_UPDATED_END -->
-
-⏰ **<!--TIME-->07:14 AM<!--/TIME-->** (Jakarta)
-📡 Status: **<!--STATUS-->Offline<!--/STATUS-->**
-
-<!--STATUS_MSG-->
-I'm offline right now, will respond later.
-<!--/STATUS_MSG-->
-
-*Commit hash:* [`d1ee093`](https://github.com/FebriCahyaa/FebriCahyaa/commit/d1ee0933d95b4c2a7302105ff3e8514339616d56) <!-- COMMIT_HASH -->
-<a href="https://github.com/FebriCahyaa/FebriCahyaa/actions?query=workflow%3ABuild">
-  <img src="https://img.shields.io/github/actions/workflow/status/FebriCahyaa/FebriCahyaa/Build.yml?style=flat-square" align="right" />
-</a>
-
----
-
-<img width="100%" loading="lazy" src="https://github.com/SamirPaulb/SamirPaulb/raw/main/assets/rainbow-superthin.webp" />
-
-<p align="center">Made with ❤️ by FebriCahyaa</p>
-
-<img src="https://raw.githubusercontent.com/Trilokia/Trilokia/379277808c61ef204768a61bbc5d25bc7798ccf1/bottom_header.svg" width="100%" />
+<div align="center">
+  <sub>Designed with a Material 3 Expressive-inspired visual language · Maintained with GitHub Actions · Built by Febri Cahya</sub>
+</div>
