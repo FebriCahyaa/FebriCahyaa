@@ -155,7 +155,7 @@ I value engineering that is measurable, understandable, and safe to operate—no
 
 | Signal | Value |
 |:--|:--|
-| Last refreshed | <!-- PROFILE_UPDATED_START -->11 Oct 2026, 13:02 WIB<!-- PROFILE_UPDATED_END --> |
+| Last refreshed | <!-- PROFILE_UPDATED_START -->11 Oct 2026, 20:02 WIB<!-- PROFILE_UPDATED_END --> |
 | Refresh cadence | Every 6 hours, plus manual dispatch |
 | Workflow | [Profile refresh](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/profile-refresh.yml) |
 | Quality checks | [Validate profile](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/validate-profile.yml) |
