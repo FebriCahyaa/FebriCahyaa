@@ -28,7 +28,7 @@ jobs:
           python-version: "3.x"
 
       - name: Compile scripts
-        run: python3 -m py_compile scripts/update_profile.py scripts/validate_assets.py scripts/build_terminal_assets.py
+        run: python3 -m py_compile scripts/update_profile.py scripts/validate_assets.py scripts/assetkit.py scripts/build_assets.py
 
       - name: Validate README markers
         run: python3 scripts/update_profile.py --check
@@ -41,7 +41,7 @@ jobs:
         run: python3 -m pip install "fonttools==4.66.1" "PyYAML==6.0.3"
 
       - name: Check generated Lottie and SVG are up to date
-        run: python3 scripts/build_terminal_assets.py --check
+        run: python3 scripts/build_assets.py --check
 
       - name: Run unit tests
         run: python3 -m unittest discover -s tests -v

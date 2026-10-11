@@ -18,12 +18,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 README = ROOT / "README.md"
 WORKFLOWS = ROOT / ".github" / "workflows"
-SVG_PATH = ROOT / "assets" / "profile-hero.svg"
-LOTTIE_PATH = ROOT / "assets" / "lottie" / "terminal-intro.json"
-GIF_PATHS = (
-    ROOT / "assets" / "animations" / "terminal-intro.gif",
-    ROOT / "assets" / "animations" / "terminal-intro-dark.gif",
-)
+ASSETS = ROOT / "assets"
+LOTTIE_DIR = ASSETS / "lottie"
+GIF_DIR = ASSETS / "animations"
+STATIC_DIR = ASSETS / "static"
+SOCIAL_DIR = ASSETS / "social"
+GIF_SUFFIXES = ("", "-dark")  # light and dark page backgrounds
 GIF_BUDGET_BYTES = 2 * 1024 * 1024
 # The only workflow allowed to commit README.md (see docs/profile-automation.md).
 README_WRITER = "profile-refresh.yml"
@@ -81,6 +81,7 @@ def check_svg(path: Path) -> dict:
 # --------------------------------------------------------------------------- lottie
 
 SHAPE_TYPES = {"gr", "sh", "rc", "el", "fl", "st", "tr"}
+SHAPE_PROPERTIES = {"rc": ("p", "s", "r"), "el": ("p", "s"), "fl": ("c", "o"), "st": ("c", "o", "w")}
 
 
 def _check_property(prop: object, where: str, first: int, last: int) -> None:
@@ -124,6 +125,9 @@ def _check_shapes(shapes: list, where: str, first: int, last: int) -> int:
             color = shape["c"]["k"]
             if len(color) != 4 or any(not 0 <= channel <= 1 for channel in color):
                 raise AssetError(f"{here}: colour channels must be within 0..1")
+        if kind in SHAPE_PROPERTIES:
+            for name in SHAPE_PROPERTIES[kind]:
+                _check_property(shape.get(name), f"{here}.{name}", first, last)
         elif kind == "tr":
             for name in ("p", "a", "s", "r", "o"):
                 _check_property(shape.get(name), f"{here}.{name}", first, last)
@@ -346,6 +350,44 @@ def check_workflows(directory: Path = WORKFLOWS) -> dict:
 # --------------------------------------------------------------------------- cli
 
 
+def scene_names() -> list[str]:
+    return sorted(path.stem for path in LOTTIE_DIR.glob("*.json"))
+
+
+def gif_paths(name: str) -> list[Path]:
+    return [GIF_DIR / f"{name}{suffix}.gif" for suffix in GIF_SUFFIXES]
+
+
+def check_scene(name: str) -> str:
+    """A Lottie source, its static SVG poster, and its GIFs must agree with each other."""
+    lottie = check_lottie(LOTTIE_DIR / f"{name}.json")
+    svg = check_svg(STATIC_DIR / f"{name}.svg")
+    if (svg["width"], svg["height"]) != (lottie["width"], lottie["height"]):
+        raise AssetError(f"{name}: static SVG and Lottie composition sizes differ")
+    gifs = []
+    for path in gif_paths(name):
+        info = check_gif(path, lottie["width"], lottie["height"])
+        if abs(info.duration_ms - lottie["seconds"] * 1000) > 20:
+            raise AssetError(f"{path.name}: loop is {info.duration_ms} ms but the Lottie timeline is {lottie['seconds'] * 1000:.0f} ms")
+        gifs.append(info)
+    sizes = " / ".join(f"{info.size / 1024:.0f} KiB" for info in gifs)
+    return (
+        f"{lottie['width']}x{lottie['height']}, {lottie['seconds']:.2f}s, {lottie['layers']} layers; "
+        f"GIFs {gifs[0].frames} frames, loop forever, {sizes}"
+    )
+
+
+def check_orphans() -> str:
+    """Every GIF and static SVG must belong to a Lottie source."""
+    names = set(scene_names())
+    expected = {path for name in names for path in gif_paths(name)} | {STATIC_DIR / f"{name}.svg" for name in names}
+    found = set(GIF_DIR.glob("*.gif")) | set(STATIC_DIR.glob("*.svg"))
+    orphans = sorted(str(path.relative_to(ROOT)) for path in found - expected)
+    if orphans:
+        raise AssetError(f"generated files without a Lottie source: {orphans}")
+    return f"{len(names)} scenes, {len(found)} rendered files"
+
+
 def main() -> int:
     failures = 0
 
@@ -360,18 +402,14 @@ def main() -> int:
         print(f"ok    {label}: {result}")
         return result
 
-    run("hero SVG", check_svg, SVG_PATH)
-    lottie = run("Lottie source", check_lottie, LOTTIE_PATH)
-    if lottie:
-        svg = check_svg(SVG_PATH) if SVG_PATH.exists() else None
-        if svg and (svg["width"], svg["height"]) != (lottie["width"], lottie["height"]):
-            failures += 1
-            print("FAIL  hero SVG and Lottie composition sizes differ")
-        for gif in GIF_PATHS:
-            info = run(gif.name, check_gif, gif, lottie["width"], lottie["height"])
-            if info and abs(info.duration_ms - lottie["seconds"] * 1000) > 20:
-                failures += 1
-                print(f"FAIL  {gif.name}: loop is {info.duration_ms} ms but the Lottie timeline is {lottie['seconds'] * 1000:.0f} ms")
+    if not scene_names():
+        failures += 1
+        print("FAIL  no Lottie sources found")
+    for name in scene_names():
+        run(f"scene {name}", check_scene, name)
+    run("generated file set", check_orphans)
+    for path in sorted(SOCIAL_DIR.glob("*.svg")):
+        run(f"social {path.stem}", check_svg, path)
     run("README references", check_readme)
     run("workflow README writers", check_workflows)
     if failures:

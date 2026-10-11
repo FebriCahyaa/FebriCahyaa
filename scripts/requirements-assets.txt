@@ -1,4 +1,4 @@
-# Asset tooling for scripts/build_terminal_assets.py only.
+# Asset tooling for scripts/build_assets.py (and scripts/assetkit.py) only.
 # The profile updater (scripts/update_profile.py) needs nothing beyond the standard library.
 fonttools==4.66.1      # glyph outlines for the Lottie and SVG output
 pillow==12.3.0         # GIF encoding

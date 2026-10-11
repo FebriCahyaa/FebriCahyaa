@@ -2,7 +2,7 @@
 
 This repository is the `FebriCahyaa` GitHub profile. It has two moving parts:
 
-- **Generated hero assets**: a terminal animation built from a Lottie source and committed to the repository.
+- **Generated assets**: four terminal-style animations (each a Lottie source plus GIFs rendered from it) and the social buttons, all committed to the repository.
 - **Profile automation**: GitHub Actions workflows that keep a few README values current.
 
 Everything is regenerated or validated by scripts in `scripts/`.
@@ -43,17 +43,37 @@ These are the updater's reliability rules:
 
 The README does not show an "online/offline" status. A scheduled workflow only proves when data was refreshed, not whether anyone is available.
 
-## Hero animation
+## Animations and generated assets
 
-| Asset | Role |
+Four animated scenes appear in the README. Each is described once in `scripts/build_assets.py`:
+
+| Scene | Where | What it shows |
+| --- | --- | --- |
+| `terminal-intro` | Hero | An illustrative session: `whoami`, then `ls ~/projects`, then `clear` |
+| `kernel-ci` | `~/now` | An illustrative ci-build run of the real targets through resolve → patch → toolchain → compile → AnyKernel3 → release |
+| `flux-loop` | `~/work` | A simulated Flux profile loop: device state → fluxd → applied profile, with profile switches driven by game and thermal events |
+| `terminal-exit` | Footer | The session closing: `exit`, `logout`, `[Process completed]` |
+
+None of these show a live device. Their window titles and status bars say "illustrative" or "simulated".
+
+Each scene `<name>` produces four files:
+
+| File | Role |
 | --- | --- |
-| `assets/lottie/terminal-intro.json` | Lottie (Bodymovin 5.7 schema) source: 1200×420, 25 fps, 258 frames (10.32 s), shape layers only |
-| `assets/animations/terminal-intro.gif` | README animation for light themes (corners blended onto `#FFFFFF`) |
-| `assets/animations/terminal-intro-dark.gif` | README animation for dark themes (corners blended onto `#0D1117`) |
-| `assets/profile-hero.svg` | Static poster frame, shown when the viewer prefers reduced motion |
-| `assets/fonts/` | JetBrains Mono NL Regular and Bold, subset to the glyphs needed (SIL OFL 1.1, see `OFL.txt`) |
+| `assets/lottie/<name>.json` | Lottie (Bodymovin 5.7 schema) source, built from shape layers only |
+| `assets/animations/<name>.gif` | README animation for light themes (corners blended onto `#FFFFFF`) |
+| `assets/animations/<name>-dark.gif` | README animation for dark themes (corners blended onto `#0D1117`) |
+| `assets/static/<name>.svg` | Static poster frame, shown when the viewer prefers reduced motion |
 
-The README chooses between these with a `<picture>` element:
+The supporting files are:
+
+| Path | Contents |
+| --- | --- |
+| `assets/social/*.svg` | Static contact buttons, generated the same way |
+| `assets/fonts/` | JetBrains Mono NL Regular and Bold, subset to the glyphs needed (SIL OFL 1.1, see `OFL.txt`) |
+| `assets/icons/` | Brand icons for Telegram, Instagram, and GitHub, copied unmodified from [Simple Icons](https://simpleicons.org) 16.31.0 (CC0 1.0) |
+
+The README chooses between the files with a `<picture>` element:
 
 1. `prefers-reduced-motion: reduce` gets the static SVG.
 2. `prefers-color-scheme: dark` gets the dark GIF.
@@ -63,31 +83,48 @@ GitHub does not run JavaScript in READMEs, so the README never embeds a Lottie p
 
 ### How the assets relate
 
-`scripts/build_terminal_assets.py` holds one scene description: the window layout, the text, and a deterministic typing timeline. From that scene it:
+The scripts are split in two:
 
-1. **Writes the Lottie file.** Text is converted to vector outlines from the vendored fonts, so the file does not depend on installed fonts. Typing uses hold keyframes on per-glyph group opacity. Cleared lines use layer opacity keyframes plus out-points. The cursor uses hold keyframes for position and visibility.
-2. **Renders both GIFs from that Lottie file** with [rlottie](https://github.com/Samsung/rlottie), Samsung's C++ Lottie renderer, through the `rlottie-python` binding. Each frame is composited onto the theme background. Identical consecutive frames are merged, and every frame is quantized against one shared 255-colour palette with no dithering, so colours don't shimmer between frames. Pillow then writes a GIF that loops forever.
-3. **Writes the static SVG directly from the same scene.** The SVG is not rasterized from the Lottie file: it is built from the same glyph outlines and positions, frozen at the poster frame just before `clear` is typed. When rasterized with resvg, it matched that GIF frame to within 2.3/255 mean difference; only 8 of 504,000 pixels differed noticeably.
+- **`scripts/assetkit.py`** is the engine. A scene is a list of elements (text, rectangles, circles) whose opacity, offset, and width are keyframed tracks. Hold keys make discrete steps, such as typing or a cursor blink; linear keys make fades and motion.
+- **`scripts/build_assets.py`** holds the scenes and the command-line interface.
 
-The session is illustrative and the window says nothing about a live device. It shows `whoami`, then `ls ~/projects`, then `clear`. After `clear`, the screen is identical to the first frame, so the loop is seamless.
+From each scene the engine does three things:
+
+1. **Writes the Lottie file.** Text is converted to vector outlines from the vendored fonts, so the file does not depend on installed fonts. Each element becomes one shape layer.
+2. **Renders both GIFs from that Lottie file** with [rlottie](https://github.com/Samsung/rlottie), Samsung's C++ Lottie renderer, through the `rlottie-python` binding:
+   - Each frame is composited onto the theme background.
+   - rlottie sometimes shifts the whole canvas by a few colour levels between frames. Any pixel whose change is at most 8/255, compared with the previous output frame, keeps its previous value, so frames encode as small deltas instead of full canvases.
+   - Identical consecutive frames are merged.
+   - Every frame is quantized against one shared palette with no dithering, so colours don't shimmer.
+   - Pillow writes a GIF that loops forever.
+3. **Writes the static SVG directly from the same scene**, evaluated at the scene's poster frame. The SVG is not rasterized from the Lottie file. For the hero, a resvg rendering of the SVG matched the corresponding GIF frame to within 2.3/255 mean difference.
+
+Some motion is deliberately sampled rather than continuous, to keep GIFs small:
+
+- **`flux-loop`:** packets step at 12.5 fps, and the headroom bar updates every 0.48 s, like a polled metric.
+- **`kernel-ci`:** running stages blink on a shared clock.
+
+Every scene returns to its first frame at the end of the loop. The one exception is the flowing packets in `flux-loop`, which continue their motion across the loop boundary.
 
 ### Regenerating
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
 python3 -m pip install -r scripts/requirements-assets.txt
-python3 scripts/build_terminal_assets.py           # Lottie + SVG + both GIFs
-python3 scripts/build_terminal_assets.py --no-gif  # Lottie + SVG only (fontTools)
-python3 scripts/build_terminal_assets.py --check   # fail if Lottie/SVG are stale
-python3 scripts/validate_assets.py                 # structure, budgets, references
+python3 scripts/build_assets.py                  # Lottie + SVG + GIFs for every scene
+python3 scripts/build_assets.py --only kernel-ci # one scene
+python3 scripts/build_assets.py --no-gif         # Lottie + SVG only (fontTools)
+python3 scripts/build_assets.py --check          # fail if Lottie/SVG are stale
+python3 scripts/validate_assets.py               # structure, budgets, references
 ```
 
-The Lottie and SVG output is byte-for-byte deterministic, and CI's `--check` step confirms that. CI does not regenerate the GIFs: rlottie builds can differ slightly in anti-aliasing between platforms. Instead, `validate_assets.py` checks that each GIF:
+The Lottie and SVG output is byte-for-byte deterministic, and CI's `--check` step confirms that. CI does not regenerate the GIFs: rlottie builds can differ slightly in anti-aliasing between platforms. Instead, `validate_assets.py` checks every scene. For each one it checks that:
 
-- is animated and loops forever;
-- matches the Lottie dimensions and duration;
-- has no frame delay under 20 ms;
-- is under the 2 MB budget.
+- the Lottie source, static SVG, and GIFs agree on dimensions;
+- each GIF is animated, loops forever, and matches the Lottie duration;
+- no GIF frame delay is under 20 ms;
+- each GIF is under the 2 MB budget;
+- no generated file exists without a Lottie source.
 
 The fonts were subset from the [JetBrains Mono 2.304 release](https://github.com/JetBrains/JetBrainsMono/releases/tag/v2.304) (`JetBrainsMono-2.304.zip`, SHA-256 `6f6376c6ed2960ea8a963cd7387ec9d76e3f629125bc33d1fdcd7eb7012f7bbf`) with:
 
@@ -129,8 +166,9 @@ These workflows were removed because their responsibilities moved to `profile-re
 
 ## Design notes
 
-- **Visual language:** a graphite macOS-style terminal, off-white text, a restrained violet accent, and mint used only for directory listings and the status dot.
-- **Typography:** JetBrains Mono throughout the hero.
+- **Visual language:** graphite macOS-style terminal windows, off-white text, and a restrained violet accent. Mint marks success: directory listings, completed stages, and the status dot. Coral appears only when thermal headroom is low.
+- **Typography:** JetBrains Mono in every generated asset.
+- **Navigation:** section headings are terminal paths (`~/about`, `~/now`, …). GitHub turns them into plain `#about`-style anchors.
 - **README layout:** native Markdown and HTML that GitHub keeps after sanitizing (`picture`, `table`, `sub`), with no custom CSS.
 - **Third-party widgets:** the `github-readme-stats` and streak cards were removed. They duplicated the first-party metrics, depend on shared public instances, and "top languages by size" is dominated by full kernel source trees.
 - **Kept external images:** skill icons (`skillicons.dev`, with alt text listing every icon) and the contribution snake (generated by this repository's own workflow).

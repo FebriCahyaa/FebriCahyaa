@@ -7,6 +7,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 
 
 def load(name):
@@ -19,13 +20,17 @@ def load(name):
 
 
 assets = load("validate_assets")
+assetkit = load("assetkit")
+builder = load("build_assets")
 
 try:
     import fontTools  # noqa: F401
 
-    builder = load("build_terminal_assets")
+    HAVE_FONTTOOLS = True
 except ModuleNotFoundError:
-    builder = None
+    HAVE_FONTTOOLS = False
+
+EXPECTED_SCENES = ["flux-loop", "kernel-ci", "terminal-exit", "terminal-intro"]
 
 
 def tiny_gif(frames=2, loop=0, delay_cs=10):
@@ -39,37 +44,53 @@ def tiny_gif(frames=2, loop=0, delay_cs=10):
     return bytes(data + b"\x3b")
 
 
+def first_lottie():
+    return assets.LOTTIE_DIR / f"{EXPECTED_SCENES[-1]}.json"
+
+
 class CommittedAssetTests(unittest.TestCase):
-    def test_hero_svg_is_valid_and_accessible(self):
-        info = assets.check_svg(assets.SVG_PATH)
-        self.assertEqual((info["width"], info["height"]), (1200, 420))
+    def test_every_scene_is_present(self):
+        self.assertEqual(assets.scene_names(), EXPECTED_SCENES)
+        self.assertEqual(sorted(scene.name for scene in builder.animated_scenes()), EXPECTED_SCENES)
 
-    def test_lottie_source_is_structurally_valid(self):
-        info = assets.check_lottie(assets.LOTTIE_PATH)
-        self.assertEqual((info["width"], info["height"]), (1200, 420))
-        self.assertGreater(info["frames"], 1)
-        self.assertLess(info["seconds"], 15)
+    def test_each_scene_has_consistent_lottie_svg_and_gifs(self):
+        for name in assets.scene_names():
+            with self.subTest(scene=name):
+                assets.check_scene(name)
 
-    def test_gifs_are_animated_looping_and_match_lottie(self):
-        lottie = assets.check_lottie(assets.LOTTIE_PATH)
-        for path in assets.GIF_PATHS:
-            with self.subTest(gif=path.name):
-                info = assets.check_gif(path, lottie["width"], lottie["height"])
-                self.assertGreater(info.frames, 10)
-                self.assertEqual(info.loop, 0)
-                self.assertLessEqual(info.size, assets.GIF_BUDGET_BYTES)
-                self.assertAlmostEqual(info.duration_ms, lottie["seconds"] * 1000, delta=20)
+    def test_gifs_are_animated_looping_and_within_budget(self):
+        for name in assets.scene_names():
+            lottie = assets.check_lottie(assets.LOTTIE_DIR / f"{name}.json")
+            self.assertLess(lottie["seconds"], 15)
+            for path in assets.gif_paths(name):
+                with self.subTest(gif=path.name):
+                    info = assets.check_gif(path, lottie["width"], lottie["height"])
+                    self.assertGreater(info.frames, 10)
+                    self.assertEqual(info.loop, 0)
+                    self.assertLessEqual(info.size, assets.GIF_BUDGET_BYTES)
+
+    def test_no_orphaned_generated_files(self):
+        assets.check_orphans()
+
+    def test_social_buttons_are_valid_svg(self):
+        names = sorted(path.stem for path in assets.SOCIAL_DIR.glob("*.svg"))
+        self.assertEqual(names, ["github", "instagram", "telegram"])
+        for path in assets.SOCIAL_DIR.glob("*.svg"):
+            assets.check_svg(path)
 
     def test_readme_references_resolve(self):
         info = assets.check_readme()
-        self.assertGreaterEqual(info["local"], 3)
+        self.assertGreaterEqual(info["local"], 10)
+        self.assertEqual(info["anchors"], ["about", "activity", "contact", "now", "toolkit", "work"])
 
-    def test_readme_hero_uses_local_animation_with_static_fallback(self):
+    def test_readme_animations_have_dark_variant_and_static_fallback(self):
         readme = assets.README.read_text(encoding="utf-8")
-        self.assertIn('src="assets/animations/terminal-intro.gif"', readme)
-        self.assertIn('srcset="assets/animations/terminal-intro-dark.gif"', readme)
-        self.assertIn('media="(prefers-reduced-motion: reduce)" srcset="assets/profile-hero.svg"', readme)
         self.assertNotIn("<script", readme.lower())
+        for name in EXPECTED_SCENES:
+            with self.subTest(scene=name):
+                self.assertIn(f'src="assets/animations/{name}.gif"', readme)
+                self.assertIn(f'srcset="assets/animations/{name}-dark.gif"', readme)
+                self.assertIn(f'media="(prefers-reduced-motion: reduce)" srcset="assets/static/{name}.svg"', readme)
 
     def test_only_the_refresh_workflow_writes_readme(self):
         self.assertEqual(assets.check_workflows()["writers"], [assets.README_WRITER])
@@ -120,14 +141,14 @@ class ValidatorNegativeTests(unittest.TestCase):
             assets.parse_gif(self.write("cut.gif", tiny_gif()[:-12]))
 
     def test_lottie_with_unordered_keyframes_is_rejected(self):
-        data = json.loads(assets.LOTTIE_PATH.read_text(encoding="utf-8"))
-        keys = data["layers"][0]["ks"]["o"]["k"]
-        keys[0]["t"], keys[1]["t"] = keys[1]["t"], keys[0]["t"]
+        data = json.loads(first_lottie().read_text(encoding="utf-8"))
+        animated = next(layer["ks"]["o"] for layer in data["layers"] if layer["ks"]["o"].get("a") == 1)
+        animated["k"][0]["t"], animated["k"][1]["t"] = animated["k"][1]["t"], animated["k"][0]["t"]
         with self.assertRaisesRegex(assets.AssetError, "increasing"):
             assets.check_lottie(self.write("bad.json", json.dumps(data)))
 
     def test_lottie_group_without_transform_is_rejected(self):
-        data = json.loads(assets.LOTTIE_PATH.read_text(encoding="utf-8"))
+        data = json.loads(first_lottie().read_text(encoding="utf-8"))
         data["layers"][0]["shapes"][0]["it"].pop()
         with self.assertRaisesRegex(assets.AssetError, "transform"):
             assets.check_lottie(self.write("bad.json", json.dumps(data)))
@@ -149,6 +170,10 @@ class ValidatorNegativeTests(unittest.TestCase):
         self.assertIn("#missing", message)
         self.assertIn("without alt", message)
 
+    def test_terminal_style_headings_produce_plain_anchors(self):
+        self.assertEqual(assets.github_anchor("~/about"), "about")
+        self.assertEqual(assets.github_anchor("Featured work"), "featured-work")
+
     def test_competing_readme_writer_is_rejected(self):
         self.write("workflows/profile-refresh.yml", "run: |\n  git add README.md\n  git push\n")
         self.write("workflows/legacy.yml", "run: |\n  sed -i s/x/y/ README.md\n  git commit -am x\n")
@@ -166,51 +191,92 @@ class ValidatorNegativeTests(unittest.TestCase):
             assets.check_workflows(self.dir / "b")
 
 
-@unittest.skipIf(builder is None, "fontTools is not installed (pip install -r scripts/requirements-assets.txt)")
+class TrackTests(unittest.TestCase):
+    def test_hold_and_linear_interpolation(self):
+        steps = assetkit.Track.steps([(0, 0), (10, 100)])
+        self.assertEqual(steps.at(9), (0,))
+        self.assertEqual(steps.at(10), (100,))
+        ramp = assetkit.Track.ramp([(0, 0), (10, 100)])
+        self.assertEqual(ramp.at(5), (50.0,))
+        self.assertEqual(ramp.at(20), (100,))
+
+    def test_lottie_keyframes(self):
+        self.assertEqual(assetkit.Track.const(100).lottie(), {"a": 0, "k": 100})
+        frames = assetkit.Track.ramp([(0, 0), (10, 100)]).lottie()["k"]
+        self.assertEqual(frames[0]["o"], {"x": [0], "y": [0]})
+        self.assertNotIn("h", frames[0])
+        self.assertEqual(assetkit.Track.steps([(0, 0), (4, 1)]).lottie()["k"][0]["h"], 1)
+
+    def test_presence_fades_and_wraps_cleanly(self):
+        track = builder.presence([(0, 10), (50, 100)], total=100, fade=5)
+        self.assertEqual(track.at(0), (100,))
+        self.assertEqual(track.at(30)[0], 0)
+        self.assertEqual(track.at(99)[0], 100)
+
+
+def visible_opacity(element, frame):
+    """Layer opacity, or 0 while a typed line has no revealed characters yet."""
+    typed = getattr(element, "typed", None)
+    if typed and min(typed) > frame:
+        return (0,)
+    return element.opacity.at(frame)
+
+
+class SceneTests(unittest.TestCase):
+    """Scene timelines; no fonts needed."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.scenes = {scene.name: scene for scene in builder.animated_scenes()}
+
+    def test_every_element_is_identical_on_first_and_last_frame_of_finite_motion(self):
+        # Loops must return to their first frame, except continuously flowing packets.
+        for scene in self.scenes.values():
+            for element in scene.elements:
+                if element.name.startswith("packet"):
+                    continue
+                with self.subTest(scene=scene.name, element=element.name):
+                    last = scene.frames - 1
+                    self.assertEqual(visible_opacity(element, 0), visible_opacity(element, last))
+                    if visible_opacity(element, 0)[0] > 0:
+                        self.assertEqual(element.offset.at(0), element.offset.at(last))
+
+    def test_hero_typing_is_ordered_and_poster_shows_full_session(self):
+        hero = self.scenes["terminal-intro"]
+        for element in hero.elements:
+            if getattr(element, "typed", None):
+                self.assertEqual(element.typed, sorted(element.typed))
+                self.assertEqual(len(element.typed), len(element.text))
+        visible = {element.name for element in hero.elements if element.opacity.at(hero.poster)[0] > 0}
+        self.assertTrue({"output name", "output listing", "prompt 3"} <= visible)
+        clear = next(element for element in hero.elements if element.name == "command clear")
+        self.assertGreater(clear.typed[0], hero.poster)
+
+    def test_scenes_stay_inside_their_canvas(self):
+        for scene in self.scenes.values():
+            for element in scene.elements:
+                if isinstance(element, assetkit.Text):
+                    with self.subTest(scene=scene.name, element=element.name):
+                        self.assertLessEqual(element.x + element.width, scene.width)
+                        self.assertLessEqual(element.baseline, scene.height)
+
+
+@unittest.skipIf(not HAVE_FONTTOOLS, "fontTools is not installed (pip install -r scripts/requirements-assets.txt)")
 class GeneratorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.scene = builder.build_scene()
-        cls.outlines = builder.GlyphOutlines()
-
-    def test_loop_is_seamless(self):
-        self.assertEqual(self.scene.cursor[0], self.scene.cursor[-1])
-        self.assertEqual(len(self.scene.cursor), self.scene.total_frames)
-        cleared = [line for line in self.scene.lines if line.clear is not None]
-        persistent = [line for line in self.scene.lines if line.clear is None]
-        self.assertEqual([line.name for line in persistent], ["prompt 1"])
-        self.assertTrue(all(line.clear < self.scene.total_frames for line in cleared))
-
-    def test_typed_characters_appear_in_order(self):
-        for line in self.scene.lines:
-            if line.typed:
-                with self.subTest(line=line.name):
-                    self.assertEqual(len(line.typed), len(line.text))
-                    self.assertEqual(line.typed, sorted(line.typed))
+        cls.outlines = assetkit.GlyphOutlines()
 
     def test_committed_lottie_and_svg_match_a_fresh_build(self):
-        lottie = builder.serialize_lottie(builder.build_lottie(self.scene, self.outlines))
-        svg = builder.build_svg(self.scene, self.outlines)
-        self.assertEqual(lottie, builder.LOTTIE_PATH.read_text(encoding="utf-8"), "run scripts/build_terminal_assets.py")
-        self.assertEqual(svg, builder.SVG_PATH.read_text(encoding="utf-8"), "run scripts/build_terminal_assets.py")
-
-    def test_svg_poster_shows_the_full_session(self):
-        svg = builder.build_svg(self.scene, self.outlines)
-        poster = self.scene.poster_frame
-        visible = [
-            line.name
-            for line in self.scene.lines
-            if (line.typed[0] if line.typed else line.appear) <= poster and (line.clear is None or line.clear > poster)
-        ]
-        self.assertIn("output name", visible)
-        self.assertIn("output listing", visible)
-        self.assertNotIn("command clear", visible)
-        self.assertIn("<title", svg)
+        scenes = builder.animated_scenes() + builder.static_scenes()
+        for path, text in builder.text_outputs(scenes, self.outlines).items():
+            with self.subTest(path=path.name):
+                self.assertEqual(text, path.read_text(encoding="utf-8"), "run scripts/build_assets.py")
 
     def test_contour_conversion_closes_paths(self):
         contours = self.outlines.contours("regular", "o")
         self.assertGreaterEqual(len(contours), 2)  # outer ring and counter
-        path = builder.contour_to_lottie(*contours[0], 0.017, 0, 0)["ks"]["k"]
+        path = assetkit.contour_to_lottie(*contours[0], 0.017, 0, 0)["ks"]["k"]
         self.assertTrue(path["c"])
         self.assertEqual(len(path["v"]), len(path["i"]))
         self.assertNotEqual(path["v"][0], path["v"][-1])
