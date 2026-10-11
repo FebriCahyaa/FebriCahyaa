@@ -30,6 +30,7 @@ from assetkit import (  # noqa: E402
     ROOT,
     Circle,
     Icon,
+    Raw,
     Rect,
     RoundRect,
     Run,
@@ -487,6 +488,170 @@ def terminal_exit() -> Scene:
     return scene
 
 
+# --------------------------------------------------------------------------- devices
+
+
+DEVICES = [
+    {
+        "id": "garnet",
+        "name": "Redmi Note 13 Pro 5G",
+        "line": "garnet · 2023 · Android 13",
+        "specs": [
+            ("Chip", "Snapdragon 7s Gen 2 · 4 nm"),
+            ("CPU", "4x A78 2.4 + 4x A55 1.95 GHz"),
+            ("GPU", "Adreno 710"),
+            ("Display", '6.67" AMOLED · 1.5K · 120 Hz'),
+            ("Camera", "200 MP + 8 MP UW + 2 MP macro"),
+            ("Battery", "5100 mAh · 67 W"),
+            ("Kernel", "Linux 5.10 GKI · ci-build"),
+        ],
+    },
+    {
+        "id": "lavender",
+        "name": "Redmi Note 7",
+        "line": "lavender · 2019 · Android 9",
+        "specs": [
+            ("Chip", "Snapdragon 660 · 14 nm"),
+            ("CPU", "8x Kryo 260 · up to 2.2 GHz"),
+            ("GPU", "Adreno 512"),
+            ("Display", '6.3" IPS LCD · 2340 x 1080'),
+            ("Camera", "48 MP + 5 MP depth"),
+            ("Battery", "4000 mAh · 18 W"),
+            ("Kernel", "Linux 4.4 / 4.19 · ci-build"),
+        ],
+    },
+    {
+        "id": "iphone12",
+        "name": "iPhone 12",
+        "line": "iPhone13,2 · 2020 · iOS 14",
+        "specs": [
+            ("Chip", "A14 Bionic · 5 nm"),
+            ("CPU", "6 cores · 2P + 4E"),
+            ("GPU", "4-core Apple GPU"),
+            ("Display", '6.1" Super Retina XDR OLED'),
+            ("Camera", "12 MP wide + 12 MP ultra wide"),
+            ("Battery", "up to 17 h video · 20 W"),
+            ("Extras", "Face ID · MagSafe · 5G"),
+        ],
+    },
+]
+
+PHONE_W, PHONE_H = 112, 230
+
+
+def _lens(cx: float, cy: float, r: float, ring: str = "#14151B") -> str:
+    """A camera lens: ring, glass with a radial gradient, and a small highlight."""
+    return (
+        f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{ring}" stroke="#3B3A4C" stroke-width="1.5"/>'
+        f'<circle cx="{cx}" cy="{cy}" r="{r * 0.58:.2f}" fill="url(#glass)"/>'
+        f'<circle cx="{cx - r * 0.22:.2f}" cy="{cy - r * 0.22:.2f}" r="{max(1.2, r * 0.16):.2f}" fill="#FFFFFF" opacity=".38"/>'
+    )
+
+
+def phone_back(device: str, x: float, y: float, delay: float) -> str:
+    """Original, simplified back-view illustration of each phone (no logos)."""
+    w, h = PHONE_W, PHONE_H
+    body = {
+        "garnet": ("#2C2645", "#14131B", 20),
+        "lavender": ("#2D4F86", "#2B2350", 18),
+        "iphone12": ("#2F4B66", "#1F3346", 22),
+    }[device]
+    top, bottom, radius = body
+    if device == "garnet":
+        camera = (
+            '<rect x="10" y="10" width="58" height="92" rx="15" fill="#0F0F15" stroke="#34304A"/>'
+            + _lens(31, 33, 15) + _lens(31, 77, 15)
+            + _lens(55, 27, 6) + '<circle cx="55" cy="46" r="4" fill="#EDE6CF" opacity=".85"/>'
+        )
+    elif device == "lavender":
+        camera = (
+            '<rect x="11" y="12" width="28" height="62" rx="14" fill="#0E1018" stroke="#40507A"/>'
+            + _lens(25, 28, 9.5) + _lens(25, 58, 9.5)
+            + '<circle cx="25" cy="88" r="4" fill="#EDE6CF" opacity=".85"/>'
+            + f'<circle cx="{w / 2}" cy="78" r="13" fill="#24365F" stroke="#5A6C98" stroke-width="1.2"/>'
+        )
+    else:
+        camera = (
+            '<rect x="9" y="9" width="62" height="62" rx="16" fill="#3A5874" stroke="#557694"/>'
+            + _lens(26, 26, 12, "#10141A") + _lens(54, 54, 12, "#10141A")
+            + '<circle cx="54" cy="25" r="4.5" fill="#EDE6CF" opacity=".85"/>'
+            + '<circle cx="27" cy="54" r="1.6" fill="#0E1218"/>'
+        )
+    clip = f"clip-{device}"
+    return (
+        f'<g transform="translate({x:g} {y:g})">'
+        f'<ellipse cx="{w / 2}" cy="{h + 14}" rx="{w * 0.46:.1f}" ry="7" fill="#000000" opacity=".35"/>'
+        f'<defs><linearGradient id="body-{device}" x1="0" y1="0" x2="1" y2="1">'
+        f'<stop offset="0" stop-color="{top}"/><stop offset="1" stop-color="{bottom}"/></linearGradient>'
+        f'<clipPath id="{clip}"><rect width="{w}" height="{h}" rx="{radius}"/></clipPath></defs>'
+        f'<rect x="{w - 0.5}" y="58" width="2.5" height="26" rx="1.2" fill="#4A4858"/>'
+        f'<rect x="{w - 0.5}" y="94" width="2.5" height="42" rx="1.2" fill="#4A4858"/>'
+        f'<rect width="{w}" height="{h}" rx="{radius}" fill="url(#body-{device})" stroke="#FFFFFF" stroke-opacity=".14"/>'
+        f'<g clip-path="url(#{clip})"><rect class="sweep" style="animation-delay:{delay}s" x="-60" y="-40" width="46" '
+        f'height="{h + 80}" fill="url(#sheen)" transform="rotate(18)"/></g>'
+        f"{camera}</g>"
+    )
+
+
+def devices_card() -> Scene:
+    width, column = 1200, 400
+    phone_y, name_y = 72, 352
+    rows_y, row_h = 410, 24
+    height = rows_y + row_h * 6 + 30 + 34
+    scene = Scene(
+        name="devices",
+        width=width,
+        height=height,
+        title="Devices — Redmi Note 13 Pro 5G, Redmi Note 7 and iPhone 12",
+        description=(
+            "Original illustrations of three phones with their specifications. Redmi Note 13 Pro 5G (garnet): "
+            "Snapdragon 7s Gen 2, 6.67-inch 120 Hz AMOLED, 200 MP camera, 5100 mAh. Redmi Note 7 (lavender): "
+            "Snapdragon 660, 6.3-inch LCD, 48 MP camera, 4000 mAh. iPhone 12: A14 Bionic, 6.1-inch Super Retina "
+            "XDR OLED, dual 12 MP cameras."
+        ),
+        animated=False,
+        style=(
+            ".sweep{animation:sweep 7s ease-in-out infinite}"
+            "@keyframes sweep{0%{transform:rotate(18deg) translateX(0)}55%,100%{transform:rotate(18deg) translateX(230px)}}"
+            "@media (prefers-reduced-motion:reduce){.sweep{animation:none;opacity:0}}"
+        ),
+    )
+    window(
+        scene,
+        "~/devices — specs",
+        status=([Run("● ", C["mint"], 12), Run("3 devices", C["muted"], 12)], "illustrations are original artwork · not to scale"),
+    )
+    scene.add(
+        Raw(
+            name="shared gradients",
+            markup=(
+                '<defs><radialGradient id="glass" cx=".4" cy=".35" r=".7">'
+                '<stop offset="0" stop-color="#3A4A78"/><stop offset=".55" stop-color="#151A2A"/>'
+                '<stop offset="1" stop-color="#05060A"/></radialGradient>'
+                '<linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">'
+                '<stop offset="0" stop-color="#FFFFFF" stop-opacity="0"/>'
+                '<stop offset=".5" stop-color="#FFFFFF" stop-opacity=".16"/>'
+                '<stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient></defs>'
+            ),
+        )
+    )
+    for index, device in enumerate(DEVICES):
+        left = index * column
+        if index:
+            scene.add(Rect(name=f"column divider {index}", x=left, y=72, w=1, h=height - 72 - 60, fill=C["divider"]))
+        scene.add(Raw(name=f"phone {device['id']}", markup=phone_back(device["id"], left + (column - PHONE_W) / 2, phone_y, index * 0.9)))
+        text_x = left + 40
+        scene.add(Text(name=f"{device['id']} name", runs=[Run(device["name"], C["text"], 18, "bold")], x=text_x, baseline=name_y))
+        scene.add(Text(name=f"{device['id']} line", runs=[Run("● ", C["mint"], 12), Run(device["line"], C["muted"], 13)],
+                       x=text_x, baseline=name_y + 24))
+        for row, (label, value) in enumerate(device["specs"]):
+            scene.add(
+                Text(name=f"{device['id']} {label}", runs=[Run(f"{label:<9}", C["dim"], 13), Run(value, C["soft"], 13)],
+                     x=text_x, baseline=rows_y + row * row_h)
+            )
+    return scene
+
+
 # --------------------------------------------------------------------------- social
 
 
@@ -521,7 +686,7 @@ def animated_scenes() -> list[Scene]:
 
 
 def static_scenes() -> list[Scene]:
-    return [social_button(*entry) for entry in SOCIAL]
+    return [devices_card()] + [social_button(*entry) for entry in SOCIAL]
 
 
 def lottie_path(scene: Scene) -> Path:
@@ -529,7 +694,9 @@ def lottie_path(scene: Scene) -> Path:
 
 
 def svg_path(scene: Scene) -> Path:
-    return ASSETS / ("static" if scene.animated else "social") / f"{scene.name}.svg"
+    if scene.animated:
+        return ASSETS / "static" / f"{scene.name}.svg"
+    return ASSETS / ("social" if scene.name in {entry[0] for entry in SOCIAL} else "cards") / f"{scene.name}.svg"
 
 
 def gif_paths(scene: Scene) -> dict[Path, str]:

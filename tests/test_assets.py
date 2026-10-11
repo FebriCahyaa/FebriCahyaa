@@ -72,6 +72,20 @@ class CommittedAssetTests(unittest.TestCase):
     def test_no_orphaned_generated_files(self):
         assets.check_orphans()
 
+    def test_devices_card_is_valid_svg_with_reduced_motion_guard(self):
+        path = assets.CARDS_DIR / "devices.svg"
+        assets.check_svg(path)
+        svg = path.read_text(encoding="utf-8")
+        self.assertIn("prefers-reduced-motion", svg)
+        for name in ("Redmi Note 13 Pro 5G", "Redmi Note 7", "iPhone 12"):
+            self.assertIn(name, svg)
+
+    def test_readme_sections_are_collapsible(self):
+        readme = assets.README.read_text(encoding="utf-8")
+        self.assertEqual(readme.count("<details open>"), 1)
+        self.assertEqual(readme.count("<details"), readme.count("</details>"))
+        self.assertEqual(readme.count("<summary><h2>"), 7)
+
     def test_social_buttons_are_valid_svg(self):
         names = sorted(path.stem for path in assets.SOCIAL_DIR.glob("*.svg"))
         self.assertEqual(names, ["github", "instagram", "telegram"])
@@ -81,7 +95,7 @@ class CommittedAssetTests(unittest.TestCase):
     def test_readme_references_resolve(self):
         info = assets.check_readme()
         self.assertGreaterEqual(info["local"], 10)
-        self.assertEqual(info["anchors"], ["about", "activity", "contact", "now", "toolkit", "work"])
+        self.assertEqual(info["anchors"], ["about", "activity", "contact", "devices", "now", "toolkit", "work"])
 
     def test_readme_animations_have_dark_variant_and_static_fallback(self):
         readme = assets.README.read_text(encoding="utf-8")

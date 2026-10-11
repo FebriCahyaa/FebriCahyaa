@@ -23,10 +23,14 @@ LOTTIE_DIR = ASSETS / "lottie"
 GIF_DIR = ASSETS / "animations"
 STATIC_DIR = ASSETS / "static"
 SOCIAL_DIR = ASSETS / "social"
+CARDS_DIR = ASSETS / "cards"
+OUTPUT_URL = "https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/"
 GIF_SUFFIXES = ("", "-dark")  # light and dark page backgrounds
 GIF_BUDGET_BYTES = 2 * 1024 * 1024
 # The only workflow allowed to commit README.md (see docs/profile-automation.md).
 README_WRITER = "profile-refresh.yml"
+# The only workflow allowed to publish the `output` branch (cards + snake).
+OUTPUT_PUBLISHER = "profile-cards.yml"
 # Marker schemes used by retired workflows; nothing may target them any more.
 LEGACY_MARKERS = (
     "STATS_REPOS",
@@ -296,7 +300,9 @@ def check_readme(path: Path = README) -> dict:
     collector.feed(content)
     markdown_links = re.findall(r"\]\(([^)\s]+)\)", content)
     references = collector.references + markdown_links
-    anchors = {github_anchor(match) for match in re.findall(r"^#{1,6}\s+(.+)$", content, flags=re.MULTILINE)}
+    headings = re.findall(r"^#{1,6}\s+(.+)$", content, flags=re.MULTILINE)
+    headings += re.findall(r"<h[1-6][^>]*>(.*?)</h[1-6]>", content, flags=re.IGNORECASE | re.DOTALL)
+    anchors = {github_anchor(heading) for heading in headings}
 
     problems = []
     local = 0
@@ -333,10 +339,21 @@ def readme_writers(directory: Path = WORKFLOWS) -> dict[str, bool]:
     return writers
 
 
+def output_publishers(directory: Path = WORKFLOWS) -> list[str]:
+    return sorted(
+        workflow.name
+        for workflow in directory.glob("*.y*ml")
+        if re.search(r"publish_branch:\s*output\b", workflow.read_text(encoding="utf-8"))
+    )
+
+
 def check_workflows(directory: Path = WORKFLOWS) -> dict:
     writers = [name for name, writes in readme_writers(directory).items() if writes]
     if writers != [README_WRITER]:
         raise AssetError(f"workflows: expected only {README_WRITER} to write README.md, found {writers or 'none'}")
+    publishers = output_publishers(directory)
+    if publishers and publishers != [OUTPUT_PUBLISHER]:
+        raise AssetError(f"workflows: expected only {OUTPUT_PUBLISHER} to publish the output branch, found {publishers}")
     for workflow in directory.glob("*.y*ml"):
         text = workflow.read_text(encoding="utf-8")
         legacy = [marker for marker in LEGACY_MARKERS if marker in text]
@@ -344,7 +361,26 @@ def check_workflows(directory: Path = WORKFLOWS) -> dict:
             raise AssetError(f"workflows: {workflow.name} targets retired README markers {legacy}")
         if re.search(r"cron:\s*['\"]\*/[1-9]\s", text) or "cron: \"* * * * *\"" in text:
             raise AssetError(f"workflows: {workflow.name} runs on a minute-level schedule")
-    return {"writers": writers, "workflows": len(list(directory.glob("*.y*ml")))}
+    return {"writers": writers, "output publishers": publishers, "workflows": len(list(directory.glob("*.y*ml")))}
+
+
+def published_outputs(directory: Path = WORKFLOWS) -> set[str]:
+    """Files the output-branch workflow produces: the cards plus the snake outputs."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from build_cards import CARD_FILES
+
+    workflow = (directory / OUTPUT_PUBLISHER).read_text(encoding="utf-8")
+    snake = set(re.findall(r"dist/([\w.-]+\.svg)", workflow))
+    return set(CARD_FILES) | snake
+
+
+def check_output_references(path: Path = README) -> dict:
+    """README images on the output branch must be files the workflow actually publishes."""
+    referenced = set(re.findall(re.escape(OUTPUT_URL) + r'([\w.-]+)', path.read_text(encoding="utf-8")))
+    unknown = sorted(referenced - published_outputs())
+    if unknown:
+        raise AssetError(f"README references output-branch files nothing publishes: {unknown}")
+    return {"output files referenced": sorted(referenced)}
 
 
 # --------------------------------------------------------------------------- cli
@@ -408,8 +444,9 @@ def main() -> int:
     for name in scene_names():
         run(f"scene {name}", check_scene, name)
     run("generated file set", check_orphans)
-    for path in sorted(SOCIAL_DIR.glob("*.svg")):
-        run(f"social {path.stem}", check_svg, path)
+    for path in sorted(SOCIAL_DIR.glob("*.svg")) + sorted(CARDS_DIR.glob("*.svg")):
+        run(f"{path.parent.name} {path.stem}", check_svg, path)
+    run("output-branch references", check_output_references)
     run("README references", check_readme)
     run("workflow README writers", check_workflows)
     if failures:

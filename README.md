@@ -6,24 +6,23 @@
   <img src="assets/animations/terminal-intro.gif" width="100%" alt="A terminal window. An illustrative session runs whoami, which prints: Febri Cahya — Android · Linux · Systems Engineering — Building reliable tools for the layers beneath the interface. Then ls ~/projects lists flux, synthesiscore, hico and ci-build." />
 </picture>
 
-<p>
-  <a href="#about"><code>~/about</code></a> &nbsp;
-  <a href="#now"><code>~/now</code></a> &nbsp;
-  <a href="#work"><code>~/work</code></a> &nbsp;
-  <a href="#toolkit"><code>~/toolkit</code></a> &nbsp;
-  <a href="#activity"><code>~/activity</code></a> &nbsp;
-  <a href="#contact"><code>~/contact</code></a>
-</p>
+<img src="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/clock.svg" width="100%" alt="Location and local time in Indonesia (Asia/Jakarta, WIB), refreshed every 30 minutes by GitHub Actions" />
+
+<sub>Sections below are collapsed: select a heading to open it.</sub>
 
 </div>
 
-## ~/about
+<details open>
+<summary><h2>~/about</h2></summary>
 
 I'm **Febri Rahmad Cahya**, an independent developer from Indonesia working on the layers beneath the interface: Android system services, Linux, kernels, and the automation that builds and ships them.
 
 I value engineering that is measurable, understandable, and safe to operate: changes that can be explained, verified, and reverted, not tweaks that only look good in a benchmark.
 
-## ~/now
+</details>
+
+<details>
+<summary><h2>~/now</h2> &nbsp;<sub>current focus · kernel CI</sub></summary>
 
 - **Event-driven device state.** Following Android system state through binder and framework callbacks instead of polling `dumpsys`.
 - **Kernel work.** Android kernels for Xiaomi garnet (5.10 GKI) and lavender (4.4 / 4.19), and the kernel framework behind [Zairenkai](https://github.com/FebriCahyaa/Zairenkai).
@@ -36,7 +35,10 @@ I value engineering that is measurable, understandable, and safe to operate: cha
   <img src="assets/animations/kernel-ci.gif" width="100%" alt="An illustrative ci-build run: garnet-gki (5.10 GKI), lavender-4.4 and lavender-4.19 move through resolve, patch, toolchain, compile, AnyKernel3 and release, ending with a kernel image and an AnyKernel3 zip per variant." />
 </picture>
 
-## ~/work
+</details>
+
+<details>
+<summary><h2>~/work</h2> &nbsp;<sub>Flux · SynthesisCore · HiCo Thermal · ci-build</sub></summary>
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/static/flux-loop.svg" />
@@ -71,7 +73,19 @@ I value engineering that is measurable, understandable, and safe to operate: cha
   </tr>
 </table>
 
-## ~/toolkit
+</details>
+
+<details>
+<summary><h2>~/devices</h2> &nbsp;<sub>Redmi Note 13 Pro 5G · Redmi Note 7 · iPhone 12</sub></summary>
+
+<img src="assets/cards/devices.svg" width="100%" alt="Devices: Redmi Note 13 Pro 5G (garnet) with Snapdragon 7s Gen 2, 6.67-inch 120 Hz AMOLED, 200 MP camera and 5100 mAh battery; Redmi Note 7 (lavender) with Snapdragon 660, 6.3-inch LCD, 48 MP camera and 4000 mAh battery; iPhone 12 with A14 Bionic, 6.1-inch Super Retina XDR OLED and dual 12 MP cameras." />
+
+</details>
+
+<details>
+<summary><h2>~/toolkit</h2> &nbsp;<sub>languages · tools</sub></summary>
+
+<img src="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/languages.svg" width="100%" alt="Language mix across original public repositories, each repository weighted equally, refreshed by GitHub Actions" />
 
 <table>
   <tr>
@@ -88,7 +102,12 @@ I value engineering that is measurable, understandable, and safe to operate: cha
   </tr>
 </table>
 
-## ~/activity
+</details>
+
+<details>
+<summary><h2>~/activity</h2> &nbsp;<sub>streak · metrics · latest commit · snake</sub></summary>
+
+<img src="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/streak.svg" width="100%" alt="Commit streak: current and longest streak, commits in the last year, and a 30-week activity grid, refreshed by GitHub Actions" />
 
 <table>
   <tr>
@@ -107,9 +126,12 @@ I value engineering that is measurable, understandable, and safe to operate: cha
   <img alt="Contribution graph of the past year, traversed by an animated snake" src="https://raw.githubusercontent.com/FebriCahyaa/FebriCahyaa/output/github-contribution-grid-snake.svg" width="100%" />
 </picture>
 
-<sub>Counts come from the GitHub REST API through this repository's own workflow; stars and forks cover original public repositories, not forks. Data last changed <!-- PROFILE_UPDATED_START -->11 Oct 2026, 20:02 WIB<!-- PROFILE_UPDATED_END -->.</sub>
+<sub>Cards and counts come from the GitHub REST API through this repository's own workflows. Stars and forks cover original public repositories, not forks; the streak counts commits I authored on their default branches. Metrics last changed <!-- PROFILE_UPDATED_START -->11 Oct 2026, 20:02 WIB<!-- PROFILE_UPDATED_END -->.</sub>
 
-## ~/contact
+</details>
+
+<details>
+<summary><h2>~/contact</h2> &nbsp;<sub>Telegram · Instagram · GitHub</sub></summary>
 
 The quickest way to reach me is Telegram.
 
@@ -118,6 +140,8 @@ The quickest way to reach me is Telegram.
   <a href="https://instagram.com/fbri.chy"><img src="assets/social/instagram.svg" height="52" alt="Instagram @fbri.chy" /></a>
   <a href="https://github.com/FebriCahyaa"><img src="assets/social/github.svg" height="52" alt="GitHub @FebriCahyaa" /></a>
 </p>
+
+</details>
 
 <br />
 

@@ -1,26 +1,51 @@
 # How this profile is built
 
-This repository is the `FebriCahyaa` GitHub profile. It has two moving parts:
+This repository is the `FebriCahyaa` GitHub profile. It has three moving parts:
 
-- **Generated assets**: four terminal-style animations (each a Lottie source plus GIFs rendered from it) and the social buttons, all committed to the repository.
+- **Generated assets**: four terminal-style animations (each a Lottie source plus GIFs rendered from it), the devices card, and the social buttons, all committed to the repository.
+- **Live cards**: clock and location, languages, and commit streak SVGs, regenerated every 30 minutes and published to the `output` branch.
 - **Profile automation**: GitHub Actions workflows that keep a few README values current.
+
+The README is organised as collapsible `<details>` sections, each with an `<h2>` heading inside its `<summary>`. Only the hero, the clock card, and `~/about` are visible on load. GitHub's stylesheet renders a heading inside a summary inline (`display: inline-block`), so each section reads as a single clickable line.
 
 Everything is regenerated or validated by scripts in `scripts/`.
 
 ## Workflows
 
-There is one writer for `README.md`. Every other workflow is read-only or writes to a different branch.
+There is one writer for `README.md` and one publisher for the `output` branch. Every other workflow is read-only.
 
 | Workflow | Responsibility | Writes | Trigger |
 | --- | --- | --- | --- |
 | `profile-refresh.yml` | Refreshes profile metrics, the latest Flux commit, and the "data last changed" timestamp | `README.md` on `main`, only when the data changed | Every 6 hours, on pushes that touch the README or updater, or manually |
 | `validate-profile.yml` | Compiles scripts, checks README markers, validates assets and workflow writers, checks generated assets for drift, and runs unit tests | Nothing (`contents: read`) | Push and pull request to `main`, or manually |
-| `snake.yml` | Generates light and dark contribution-snake SVGs | The orphan `output` branch only, never `main` | Daily at 08:30 WIB, or manually |
+| `profile-cards.yml` | Builds the clock, languages, and streak cards (`scripts/build_cards.py`) and the contribution snake | The orphan `output` branch only (force-replaced, so it keeps no history), never `main` | Cards every 30 minutes; snake daily at 08:30 WIB, or when missing; on pushes that touch the card code; or manually |
 | `.github/dependabot.yml` | Proposes GitHub Actions version updates | Pull requests | Weekly |
 
 All workflows use the short-lived `github.token` with least-privilege `permissions`. No personal access token or `TOKEN_GITHUB` secret is needed. Each job has a `timeout-minutes` and a concurrency group.
 
-`scripts/validate_assets.py` enforces this layout in CI. It fails if any workflow other than `profile-refresh.yml` can commit `README.md`, if a workflow targets a retired marker, or if a workflow is scheduled at minute-level frequency.
+`scripts/validate_assets.py` enforces this layout in CI. It fails if:
+
+- any workflow other than `profile-refresh.yml` can commit `README.md`;
+- any workflow other than `profile-cards.yml` publishes the `output` branch;
+- a workflow targets a retired marker;
+- a workflow is scheduled more often than every 30 minutes;
+- the README references an `output`-branch file that the workflow does not produce.
+
+The `output` branch has a single publisher because it is force-replaced on every run. Two publishers would erase each other's files: the old `snake.yml` would have deleted the cards, and vice versa. That's why the snake moved into `profile-cards.yml`. Each run first restores the files already published, so the snake only regenerates once a day.
+
+## Live cards
+
+`scripts/build_cards.py` uses the same engine and type as the committed assets. It needs `fontTools` and only reads public GitHub API data.
+
+| Card | Data | Notes |
+| --- | --- | --- |
+| `clock.svg` | Location from the GitHub profile (`Indonesia`) and the Asia/Jakarta local time at generation | GitHub cannot show a live clock: the card shows the time of the last refresh and says so |
+| `languages.svg` | `GET /repos/{repo}/languages` for every original public repository | Each repository is weighted equally, so the 1.4 GB kernel trees don't drown out every other project the way a byte count would |
+| `streak.svg` | Commits authored by `FebriCahyaa` on the default branch of each original repository, bucketed by day in WIB | Shows current and longest streak, commits in the last 365 days, and a 30-week activity grid |
+
+The streak is a commit streak rather than GitHub's contribution streak for one reason. When this was built (12 Oct 2026), GitHub's contribution calendar reported **0 contributions in the last year** for this account, even though the commits are linked to it. That is also why the contribution snake looks nearly empty.
+
+A card whose data cannot be fetched keeps its previously published copy. The run fails only when a card has neither fresh data nor a previous copy.
 
 ### README markers
 
@@ -69,6 +94,7 @@ The supporting files are:
 
 | Path | Contents |
 | --- | --- |
+| `assets/cards/devices.svg` | Devices card: original vector illustrations of the Redmi Note 13 Pro 5G, Redmi Note 7, and iPhone 12 with their specifications. A slow CSS light sweep animates the phones and is disabled under `prefers-reduced-motion` |
 | `assets/social/*.svg` | Static contact buttons, generated the same way |
 | `assets/fonts/` | JetBrains Mono NL Regular and Bold, subset to the glyphs needed (SIL OFL 1.1, see `OFL.txt`) |
 | `assets/icons/` | Brand icons for Telegram, Instagram, and GitHub, copied unmodified from [Simple Icons](https://simpleicons.org) 16.31.0 (CC0 1.0) |
@@ -116,6 +142,7 @@ python3 scripts/build_assets.py --only kernel-ci # one scene
 python3 scripts/build_assets.py --no-gif         # Lottie + SVG only (fontTools)
 python3 scripts/build_assets.py --check          # fail if Lottie/SVG are stale
 python3 scripts/validate_assets.py               # structure, budgets, references
+GH_TOKEN=... python3 scripts/build_cards.py --out dist  # live cards, as the workflow does
 ```
 
 The Lottie and SVG output is byte-for-byte deterministic, and CI's `--check` step confirms that. CI does not regenerate the GIFs: rlottie builds can differ slightly in anti-aliasing between platforms. Instead, `validate_assets.py` checks every scene. For each one it checks that:
@@ -138,8 +165,8 @@ pyftsubset JetBrainsMonoNL-<Weight>.ttf \
 ## One-time repository settings
 
 1. Open **Settings → Actions → General** for `FebriCahyaa/FebriCahyaa`.
-2. Under **Workflow permissions**, allow **Read and write permissions**. The refresh workflow needs this to commit `README.md`, and the snake workflow needs it to publish the `output` branch.
-3. Run **Generate contribution snake** once if the `output` branch does not yet contain the SVG files.
+2. Under **Workflow permissions**, allow **Read and write permissions**. The refresh workflow needs this to commit `README.md`, and the profile-cards workflow needs it to publish the `output` branch.
+3. Run **Profile cards** once if the `output` branch does not yet contain the cards and snake.
 
 ## Manual refresh from a development machine
 
@@ -163,6 +190,7 @@ These workflows were removed because their responsibilities moved to `profile-re
 | `time.yml` | Clock-based "online/offline" status every 5 minutes | Dropped as misleading |
 | `typing-svg.yml` | Rewrote a third-party typing-SVG URL | Replaced by the repository-local hero animation |
 | `update-readme.yml` | Injected this repo's own commit hash | Dropped as noise |
+| `snake.yml` | Published the snake with `force_orphan` | Merged into `profile-cards.yml`, which is now the only `output`-branch publisher |
 
 ## Design notes
 

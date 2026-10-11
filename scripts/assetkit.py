@@ -213,6 +213,13 @@ class Icon(Element):
 
 
 @dataclass
+class Raw(Element):
+    """Hand-written SVG markup (illustrations). Static SVG output only."""
+
+    markup: str = ""
+
+
+@dataclass
 class Scene:
     name: str
     width: int
@@ -224,6 +231,7 @@ class Scene:
     frames: int = 1
     poster: int = 0  # frame frozen into the static SVG
     animated: bool = True
+    style: str = ""  # CSS for the static SVG (e.g. a reduced-motion-aware flourish)
 
     def add(self, *elements: Element) -> Element:
         self.elements.extend(elements)
@@ -556,6 +564,8 @@ def build_svg(scene: Scene, outlines: GlyphOutlines | None) -> str:
                 f'<circle cx="{_num(element.cx)}" cy="{_num(element.cy)}" r="{_num(element.r)}"'
                 f"{_svg_paint(element.fill, element.stroke, element.stroke_width)}/>"
             )
+        elif isinstance(element, Raw):
+            markup.append(element.markup)
         elif isinstance(element, Icon):
             scale = element.size / 24
             markup.append(
@@ -575,6 +585,8 @@ def build_svg(scene: Scene, outlines: GlyphOutlines | None) -> str:
             body.extend(markup)
 
     defs_block = ("  <defs>\n    " + "\n    ".join(defs) + "\n  </defs>\n") if defs else ""
+    if scene.style:
+        defs_block = f"  <style>{scene.style}</style>\n" + defs_block
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{scene.width}" height="{scene.height}" '
         f'viewBox="0 0 {scene.width} {scene.height}" role="img" aria-labelledby="title desc">\n'

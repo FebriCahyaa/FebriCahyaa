@@ -1,0 +1,78 @@
+name: Profile cards
+
+# Single publisher for the `output` branch: the clock, languages and streak cards
+# (scripts/build_cards.py) and the contribution snake. Nothing here commits to main.
+# See docs/profile-automation.md.
+
+on:
+  schedule:
+    - cron: "7,37 * * * *" # cards, every 30 minutes
+    - cron: "30 1 * * *" # contribution snake, daily at 08:30 WIB
+  push:
+    branches: [main]
+    paths:
+      - scripts/build_cards.py
+      - scripts/assetkit.py
+      - scripts/build_assets.py
+      - scripts/update_profile.py
+      - assets/fonts/**
+      - .github/workflows/profile-cards.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: output-branch
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out profile repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+
+      - name: Install card tooling
+        run: python3 -m pip install "fonttools==4.66.1"
+
+      - name: Restore previously published files
+        id: previous
+        run: |
+          mkdir -p dist
+          if git fetch --depth=1 origin output; then
+            git archive FETCH_HEAD | tar -x -C dist
+          fi
+          if [ -f dist/github-contribution-grid-snake.svg ] && [ -f dist/github-contribution-grid-snake-dark.svg ]; then
+            echo "snake=present" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build clock, languages and streak cards
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/build_cards.py --out dist
+
+      - name: Generate contribution snake
+        if: steps.previous.outputs.snake != 'present' || github.event_name == 'workflow_dispatch' || github.event.schedule == '30 1 * * *'
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: FebriCahyaa
+          outputs: |
+            dist/github-contribution-grid-snake.svg
+            dist/github-contribution-grid-snake-dark.svg?palette=github-dark
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Publish to the output branch
+        uses: peaceiris/actions-gh-pages@v4.1.0
+        with:
+          github_token: ${{ github.token }}
+          publish_branch: output
+          publish_dir: ./dist
+          force_orphan: true
