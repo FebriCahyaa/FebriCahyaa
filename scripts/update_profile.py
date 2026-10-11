@@ -3,6 +3,8 @@
 
 No third-party Python packages are required. If the API cannot provide the
 profile metrics, the script exits instead of replacing real data with zeros.
+The refresh timestamp only changes when the data itself changed, so scheduled
+runs do not produce timestamp-only commits.
 """
 from __future__ import annotations
 
@@ -69,6 +71,11 @@ def validate_markers(content: str) -> None:
         raise ValueError("README marker validation failed: " + ", ".join(missing))
 
 
+def marker_value(content: str, name: str) -> str:
+    start, end = REQUIRED_MARKERS[name]
+    return content[content.index(start) + len(start) : content.index(end)]
+
+
 def replace_marker(content: str, name: str, value: str) -> str:
     start, end = REQUIRED_MARKERS[name]
     pattern = re.escape(start) + r".*?" + re.escape(end)
@@ -104,7 +111,14 @@ def number(value: object) -> int:
     return value if isinstance(value, int) and value >= 0 else 0
 
 
-def flux_latest_html() -> str:
+FLUX_UNAVAILABLE_HTML = (
+    'Latest Flux commit is temporarily unavailable. '
+    '<a href="https://github.com/FebriCahyaa/Flux/commits">Browse commit history</a>.'
+)
+
+
+def flux_latest_html() -> str | None:
+    """Return the latest Flux commit as HTML, or None if it cannot be fetched."""
     try:
         repo = request_json(f"{API_ROOT}/repos/{USERNAME}/Flux")
         if not isinstance(repo, dict):
@@ -139,12 +153,13 @@ def flux_latest_html() -> str:
     except (GitHubAPIError, ValueError) as exc:
         # Metrics can still be refreshed when a secondary project endpoint is unavailable.
         print(f"Warning: latest Flux commit could not be refreshed: {exc}", file=sys.stderr)
-        return 'Latest Flux commit is temporarily unavailable. <a href="https://github.com/FebriCahyaa/Flux/commits">Browse commit history</a>.'
+        return None
 
 
 def refresh() -> bool:
-    content = README.read_text(encoding="utf-8")
-    validate_markers(content)
+    original = README.read_text(encoding="utf-8")
+    validate_markers(original)
+    content = original
 
     user = request_json(f"{API_ROOT}/users/{USERNAME}")
     if not isinstance(user, dict) or user.get("login", "").lower() != USERNAME.lower():
@@ -161,13 +176,18 @@ def refresh() -> bool:
     for marker, value in totals.items():
         content = replace_marker(content, marker, value)
 
+    flux_html = flux_latest_html()
+    if flux_html is not None:
+        content = replace_marker(content, "FLUX_LATEST", flux_html)
+    elif not marker_value(content, "FLUX_LATEST").strip():
+        content = replace_marker(content, "FLUX_LATEST", FLUX_UNAVAILABLE_HTML)
+    # Otherwise keep the last known commit rather than replacing it with a placeholder.
+
+    if content == original:
+        print("README data is unchanged; timestamp left as is.")
+        return False
     updated = datetime.now(ZoneInfo("Asia/Jakarta")).strftime("%d %b %Y, %H:%M WIB")
     content = replace_marker(content, "PROFILE_UPDATED", updated)
-    content = replace_marker(content, "FLUX_LATEST", flux_latest_html())
-
-    if content == README.read_text(encoding="utf-8"):
-        print("README is already up to date.")
-        return False
     README.write_text(content, encoding="utf-8")
     print("README updated:")
     for marker, value in totals.items():

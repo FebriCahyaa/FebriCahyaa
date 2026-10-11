@@ -1,8 +1,15 @@
 name: Refresh Profile README
 
+# Single writer for README.md: profile metrics, the latest Flux commit, and the
+# "data last changed" timestamp. See docs/profile-automation.md.
+
 on:
   push:
-    branches: [main, master]
+    branches: [main]
+    paths:
+      - README.md
+      - scripts/update_profile.py
+      - .github/workflows/profile-refresh.yml
   schedule:
     # Every 6 hours; GitHub Actions cron uses UTC (WIB = UTC+7).
     - cron: "17 */6 * * *"
@@ -13,7 +20,7 @@ permissions:
 
 concurrency:
   group: profile-readme-refresh
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   refresh:
@@ -22,6 +29,8 @@ jobs:
     steps:
       - name: Check out profile repository
         uses: actions/checkout@v7
+        with:
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -33,7 +42,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/update_profile.py
 
-      - name: Commit README if changed
+      - name: Commit README if the data changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -43,4 +52,7 @@ jobs:
             exit 0
           fi
           git commit -m "chore(profile): refresh README data [skip ci]"
-          git push
+          # Rebase onto anything pushed meanwhile; the updater only touches marker
+          # regions, so a conflict means a human edit and the run stops instead.
+          git pull --rebase origin main
+          git push origin HEAD:main

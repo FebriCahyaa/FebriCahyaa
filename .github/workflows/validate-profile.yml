@@ -2,17 +2,22 @@ name: Validate Profile
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: validate-profile-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
@@ -22,14 +27,21 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Compile updater
-        run: python3 -m py_compile scripts/update_profile.py
+      - name: Compile scripts
+        run: python3 -m py_compile scripts/update_profile.py scripts/validate_assets.py scripts/build_terminal_assets.py
 
       - name: Validate README markers
         run: python3 scripts/update_profile.py --check
 
-      - name: Run updater unit tests
-        run: python3 -m unittest discover -s tests -v
+      - name: Validate assets, README references and workflow writers
+        run: python3 scripts/validate_assets.py
 
-      - name: Validate banner SVG
-        run: python3 -c "import xml.etree.ElementTree as ET; ET.parse('assets/profile-hero.svg'); print('Banner SVG is valid XML.')"
+      - name: Install asset tooling for the drift check
+        # fontTools only: GIF rendering (rlottie, Pillow) is not repeated in CI.
+        run: python3 -m pip install "fonttools==4.66.1" "PyYAML==6.0.3"
+
+      - name: Check generated Lottie and SVG are up to date
+        run: python3 scripts/build_terminal_assets.py --check
+
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests -v
