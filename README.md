@@ -107,19 +107,19 @@ I value engineering that is measurable, understandable, and safe to operate—no
   <tr>
     <td align="center" width="25%">
       <strong>Public repositories</strong><br />
-      <h2><!-- METRIC_REPOS_START -->—<!-- METRIC_REPOS_END --></h2>
+      <h2><!-- METRIC_REPOS_START -->23<!-- METRIC_REPOS_END --></h2>
     </td>
     <td align="center" width="25%">
       <strong>Stars earned</strong><br />
-      <h2><!-- METRIC_STARS_START -->—<!-- METRIC_STARS_END --></h2>
+      <h2><!-- METRIC_STARS_START -->1<!-- METRIC_STARS_END --></h2>
     </td>
     <td align="center" width="25%">
       <strong>Forks received</strong><br />
-      <h2><!-- METRIC_FORKS_START -->—<!-- METRIC_FORKS_END --></h2>
+      <h2><!-- METRIC_FORKS_START -->4<!-- METRIC_FORKS_END --></h2>
     </td>
     <td align="center" width="25%">
       <strong>Followers</strong><br />
-      <h2><!-- METRIC_FOLLOWERS_START -->—<!-- METRIC_FOLLOWERS_END --></h2>
+      <h2><!-- METRIC_FOLLOWERS_START -->0<!-- METRIC_FOLLOWERS_END --></h2>
     </td>
   </tr>
 </table>
@@ -139,9 +139,7 @@ I value engineering that is measurable, understandable, and safe to operate—no
 
 ## 🔭 Latest Flux update
 
-<!-- FLUX_LATEST_START -->
-Flux commit information will appear after the first successful profile refresh.
-<!-- FLUX_LATEST_END -->
+<!-- FLUX_LATEST_START --><code>b75491c</code> · <a href="https://github.com/FebriCahyaa/Flux/commit/b75491c73121cc43025ca4df7c67a297db449423">Merge pull request #13 from FebriCahyaa/claude/webroot-native-evolution</a> · <small>2026-09-29</small><!-- FLUX_LATEST_END -->
 
 ## 🐍 Contribution trail
 
@@ -157,7 +155,7 @@ Flux commit information will appear after the first successful profile refresh.
 
 | Signal | Value |
 |:--|:--|
-| Last refreshed | <!-- PROFILE_UPDATED_START -->Waiting for the first workflow run<!-- PROFILE_UPDATED_END --> |
+| Last refreshed | <!-- PROFILE_UPDATED_START -->11 Oct 2026, 13:01 WIB<!-- PROFILE_UPDATED_END --> |
 | Refresh cadence | Every 6 hours, plus manual dispatch |
 | Workflow | [Profile refresh](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/profile-refresh.yml) |
 | Quality checks | [Validate profile](https://github.com/FebriCahyaa/FebriCahyaa/actions/workflows/validate-profile.yml) |
