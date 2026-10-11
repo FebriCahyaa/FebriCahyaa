@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: "3.x"
-          cache: false
 
       - name: Compile updater
         run: python3 -m py_compile scripts/update_profile.py
