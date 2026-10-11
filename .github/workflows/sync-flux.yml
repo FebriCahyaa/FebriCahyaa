@@ -45,7 +45,7 @@ jobs:
           sed -i "s|<!--FLUX_COMMIT-->.*<!--/FLUX_COMMIT-->|$NEW|" README.md
 
       - name: Commit changes
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v11
         with:
           message: "chore(sync): update Flux latest commit → ${{ steps.flux.outputs.sha }}"
           add: "README.md"
